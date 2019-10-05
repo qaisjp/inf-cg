@@ -1,6 +1,3 @@
 # built pbrt
 pbrt-v3
 
-# exclude build outputs
-*.exr
-
