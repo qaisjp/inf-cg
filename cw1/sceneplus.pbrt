@@ -1,0 +1,8 @@
+
+# LIGHTS MOTEHR
+AttributeBegin
+Material "matte" "color Kd" [0 0 0]
+Translate 2 0 3
+AreaLightSource "area"  "color L" [2000 2000 2000] "integer nsamples" [8]
+Shape "sphere" "float radius" [3]
+AttributeEnd
