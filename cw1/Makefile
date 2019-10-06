@@ -9,12 +9,14 @@ project:
 	> /tmp/scene.out.pbrt
 
 	if [ ${SAMPLES} -ge 512 ]; then \
-		rsync /tmp/scene.out.pbrt /tmp/tex_* cirrus:; \
+		rsync /tmp/scene.out.pbrt /tmp/mesh_*.ply /tmp/tex_*.png cirrus:; \
 		time ssh cirrus pbrt-v3/build/pbrt scene.out.pbrt; \
 		scp cirrus:${OUTFILE} .; \
 	else \
 		time pbrt /tmp/scene.out.pbrt; \
 	fi
+
+	# time pbrt /tmp/scene.out.pbrt
 
 	# Open the resultant image
 	open ${OUTFILE}
