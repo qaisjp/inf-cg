@@ -1,8 +1,20 @@
-
-# LIGHTS MOTEHR
 AttributeBegin
-Material "matte" "color Kd" [0 0 0]
-Translate 2 0 3
-AreaLightSource "area"  "color L" [2000 2000 2000] "integer nsamples" [8]
-Shape "sphere" "float radius" [3]
+CoordSysTransform "camera"
+LightSource "point" "color I" [10 10 10]
 AttributeEnd
+
+# AttributeBegin
+# # Material "matte" "color Kd" [0 0 0]
+# Translate 2 0 3
+# LightSource "point"  "color I" [25 25 25]#
+# # Shape "sphere" "float radius" [3]
+# AttributeEnd
+
+# Area light
+# AttributeBegin
+#     # Material "matte" "color Kd" [0 0 0]
+#     AreaLightSource "diffuse"  "rgb L" [0.5 0.5 0.5]
+#     Translate 3 0 6
+#     ReverseOrientation # illuminate inside the bloody sphere
+#     Shape "sphere" "float radius" [5]
+# AttributeEnd
