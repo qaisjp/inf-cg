@@ -100,7 +100,7 @@ If you use `oh-my-zsh` (with `zsh`), you can put it somewhere in `~/.oh-my-zsh/c
 
 If the test commands work, then pbrt has been successfully installed.
 
-### Test pbrt
+### Generating your own test image
 
 In this section we test rendering an example scene from the command line.
 
@@ -112,10 +112,6 @@ In this section we test rendering an example scene from the command line.
 You should get a photo like this:
 
 ![](killeroo-simple.exr.jpg)
-
-### Generating your own test image
-
-TODO
 
 ## Approximate model of a scene, necessary to produce photorealistic synthetic objects
 
