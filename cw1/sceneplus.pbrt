@@ -7,7 +7,11 @@ AttributeEnd
 # Spot light emits like a helicopter light
 AttributeBegin
 # Material "matte" "color Kd" [0 0 0]
-LightSource "spot" "rgb I" [20 20 20] "float coneangle" [25] "point from" [-0.431190014 -3.35086012 0.0192409996] "point to" [-0.449010015 0.34267801 -0.0386260003]
+LightSource "spot"
+    "rgb I" [20 20 20]
+    "float coneangle" [50]
+    "point from" [-0.3 -3.35086012 -0.2]
+    "point to" [0.378197998 0.34267801 -0.335577995]
 # Shape "sphere" "float radius" [3]
 AttributeEnd
 
