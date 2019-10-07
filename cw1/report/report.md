@@ -238,6 +238,8 @@ As you can see, in real life, the box is upside down.
 
 Since this mistake doesn't really affect other objects as much, we decided to not start over. We just rerendered the image with the texture flipped, and cut it out again. We took this opportunity to modify the texture to be a little brighter, to match the original scene.
 
+We also had to move the wrench a little bit so that it had slightly more interesting reflections.
+
 ![](micbox.texture.edit.png)
 
 After adjusting the exposure, our texture looked like this:
