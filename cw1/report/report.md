@@ -125,6 +125,44 @@ And the reproduced model:
 
 ### Accurate model of the real-world lighting as in the original photograph (10)
 
+We initially added a light behind the camera using a point light (from the user guide).
+
+```python
+# Point lights emit in all directions evenly for a certain radius
+AttributeBegin
+    CoordSysTransform "camera"
+    LightSource "point" "color I" [20 20 20]
+AttributeEnd
+```
+
+![](out.1.one-light-behind-camera.png)
+
+This is good, but not good enough, so we added a spot light. The cone angle here is `5`,
+just to demonstrate that lights indeed do work.
+
+![](out.2.spot-works-coneangle5.png)
+
+With a wider cone angle of `50` we achieved similar shadows as in the original scene:
+
+![](out.3.spot-is-too-wide-coneangle50.png)
+
+Finally, after excessively tweaking `point from` and `point to`, we settled on this configuration:
+
+```python
+# Spot light emits something like a helicopter light
+AttributeBegin
+    LightSource "spot"
+        "rgb I" [20 20 20]
+        "float coneangle" [50]
+        "point from" [-0.3 -3.35086012 -0.2]
+        "point to" [0.378197998 0.34267801 -0.335577995]
+AttributeEnd
+```
+
+Which produces something like this:
+
+![](out.6.spot-fiddling-coneangle50-rgbi20-from-and-to-moved.png)
+
 ### ‘Proxy’ model(s) of real-world object(s) that affect rendered objects (10)
 
 ### Textures on real objects that appear on rendered object(s) (20)
@@ -158,6 +196,8 @@ Used the Decimate modifier.
 
 Blender crashed a few times.
 
+https://free3d.com/3d-model/fruit-v1--195897.html
+
 ### Render of synthetic scene with above parameters (5)
 
 
@@ -171,6 +211,6 @@ Blender crashed a few times.
 
 ### Shadows of real objects on rendered elements (5)
 
-### Reflections of textured obects on rendered objects (reflective material) (5)
+### Reflections of textured objects on rendered objects (reflective material) (5)
 
 ### Multiple rendered objects (5)
