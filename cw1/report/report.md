@@ -203,7 +203,7 @@ The above two models and assosciated models and textures were taken from Free3D 
 
 ### Render of synthetic scene with above parameters (5)
 
-The final render looks a bit like this:
+After placing all the objects, our render looks a bit like this:
 
 ![](out.11.final.production.png)
 
@@ -222,17 +222,33 @@ In the annotated image above, observe the following changes to the scene:
 
 ## Compositing / Merging of synthetic objects on the real-world image
 
-### Photometric consistency, i.e. light intensity, direction, color, shadows (10)
+### Microphone box mistakes
 
-### Seamless positional compositing – no mismatched edges (5)
+At some point whilst cutting out the combination wrench we realised that we made a mistake with the microphone box texture.
 
-### Shadows of rendered object on real scene (5)
+Here was our original render:
 
-### Shadows of real objects on rendered elements (5)
+![](micbox.oops.1.png)
 
-### Reflections of textured objects on rendered objects (reflective material) (5)
+And here is this area cut out from the original scene:
 
-### Multiple rendered objects (5)
+![](micbox.real.png)
+
+As you can see, in real life, the box is upside down.
+
+Since this mistake doesn't really affect other objects as much, we decided to not start over. We just rerendered the image with the texture flipped, and cut it out again. We took this opportunity to modify the texture to be a little brighter, to match the original scene.
+
+![](micbox.texture.edit.png)
+
+After adjusting the exposure, our texture looked like this:
+
+![](../blender/textures/texture-micbox.png)
+
+Here is our pbrt render with the microphone box fixed:
+
+![](out.13.micboxfix.png)
+
+
 
 ## Using pbrt is hard!
 
