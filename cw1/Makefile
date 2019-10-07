@@ -2,9 +2,11 @@ SAMPLES ?= 10
 OUTFILE ?= pbrt.png
 
 project:
+	# 10 fov is good
 	sed 's/"integer pixelsamples" 4/"integer pixelsamples" ${SAMPLES}/' /tmp/scene.pbrt |\
 	sed 's/Film "image"/Film "image" "string filename" "${OUTFILE}"/' |\
-	sed 's/"float fov" \[24.56717103880224\]/"float fov" [35]/' |\
+	sed 's/"float fov" \[24.56717103880224\]/"float fov" [10]/' |\
+	sed 's/Integrator "path"/Integrator "directlighting" "string strategy" "all"/' |\
 	sed '/WorldBegin/r sceneplus.pbrt'\
 	> /tmp/scene.out.pbrt
 

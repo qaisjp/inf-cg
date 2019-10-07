@@ -134,6 +134,30 @@ And the reproduced model:
 
 ### Choose a synthetic object model from a 3D model library (.ply files) (5)
 
+We initially chose a measuring tape.
+
+https://www.artec3d.com/3d-models/measuring-tape
+
+It's something that would fit the area. It also has a reflective surface, and so.
+
+
+Used limited dissolve to reduce vertex count https://blender.stackexchange.com/questions/31467/how-to-reduce-vertex-count-on-a-mesh
+
+90 degrees was the value we used.
+
+Due to limitations of the PBRT exporter we had to abandon this model.
+TODO add picture
+
+Instead we picked a metal nut
+
+https://www.artec3d.com/3d-models/metal-nut
+
+Still quite detailed, but can get away with a single Mirror texture.
+
+Used the Decimate modifier.
+
+Blender crashed a few times.
+
 ### Render of synthetic scene with above parameters (5)
 
 
