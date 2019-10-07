@@ -260,6 +260,21 @@ The final image looks like this:
 
 ![](superimposed.jpg)
 
+In the below photos you can observe the following changes:
+
+1. Box & fruit
+    - Shadow of fruit on back of cupboard
+    - Shadow of box on the fruit
+    - Shadow colored to match the cupboard
+2. 23andme box & wrench
+    - You can carefully observe the green 23andme box reflect off the wrench
+    - A shadow of the wrench is on the back of the cupboard
+3. Microphone box & wrench
+    - The top of the box appears as a reflection on the wrench
+    - A shadow of the wrench is on the back of the cupboard
+
+![](superimposed.annotated.jpg) ![](superimposed.2.png) ![](superimposed.3.png)
+
 ## Using pbrt is hard!
 
 PBRT isn't very well supported and unfortunately the exporter does not support the latest version of Blender. We used Blender 2.7 instead of the much superior Blender 2.8.
