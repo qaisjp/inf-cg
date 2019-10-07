@@ -275,12 +275,23 @@ In the below photos you can observe the following changes:
 
 ![](superimposed.annotated.jpg) ![](superimposed.2.png) ![](superimposed.3.png)
 
-## Using pbrt is hard!
+## Reflection
 
 PBRT isn't very well supported and unfortunately the exporter does not support the latest version of Blender. We used Blender 2.7 instead of the much superior Blender 2.8.
 
+### Shading
 
-We had to use the `pbrt` command line tool instead of just using one of Blender's default well-supported renderers (e.g. Blender). The `.pbrt` file output by the Blender did not export everything from Blender: a user would still have to manually recreate lighting as well as tweak the camera field of view.
+The fruit in our photo is too bright and appears somewhat obviously fake to the untrained eye. The textures should have been made slightly darker and slightly more realistic (polished). Additionally, in real life, fruit isn't often that perfectly round.
+
+### Lighting
+
+In our photo we shone a light from the bottom left area, but yet there are other shadows in the picture that don't match this position of lighting. This could be due to sunlight from the window affecting the photo in addition to the inside of the cupboard reflecting back on the objects.
+
+We would recommend a picture to be taken at night instead, with no light sources other than one just for the sign.
+
+### `Makefile`
+
+We had to use the `pbrt` command line tool instead of just using one of Blender's default well-supported renderers (e.g. Cycles Render). The `.pbrt` file output by the Blender extension did not export everything from Blender: a user would still have to manually recreate lighting as well as tweak the camera field of view.
 
 We decided to automate the following edits:
 
