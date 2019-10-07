@@ -165,6 +165,8 @@ Which produces something like this:
 
 ### ‘Proxy’ model(s) of real-world object(s) that affect rendered objects (10)
 
+
+
 ### Textures on real objects that appear on rendered object(s) (20)
 
 
@@ -200,6 +202,10 @@ https://free3d.com/3d-model/fruit-v1--195897.html
 
 ### Render of synthetic scene with above parameters (5)
 
+The final render looks a bit like this:
+
+![](out.11.final.production.png)
+
 
 ## Compositing / Merging of synthetic objects on the real-world image
 
@@ -214,3 +220,92 @@ https://free3d.com/3d-model/fruit-v1--195897.html
 ### Reflections of textured objects on rendered objects (reflective material) (5)
 
 ### Multiple rendered objects (5)
+
+## Using pbrt is hard!
+
+PBRT isn't very well supported and unfortunately the exporter does not support the latest version of Blender. We used Blender 2.7 instead of the much superior Blender 2.8.
+
+
+We had to use the `pbrt` command line tool instead of just using one of Blender's default well-supported renderers (e.g. Blender). The `.pbrt` file output by the Blender did not export everything from Blender: a user would still have to manually recreate lighting as well as tweak the camera field of view.
+
+We decided to automate the following edits:
+
+- Edits to existing strings
+- Inclusion of certain files
+
+So we created a file `sceneplus.pbrt` in our project folder, and this contained exactly the following code:
+
+```python
+# Point lights emit in all directions evenly for a certain radius
+AttributeBegin
+    CoordSysTransform "camera"
+    LightSource "point" "color I" [20 20 20]
+AttributeEnd
+
+# Spot light emits something like a helicopter light
+AttributeBegin
+    LightSource "spot"
+        "rgb I" [20 20 20]
+        "float coneangle" [50]
+        "point from" [-0.3 -3.35086012 -0.2]
+        "point to" [0.378197998 0.34267801 -0.335577995]
+AttributeEnd
+
+```
+
+The newline at the end of the line is very important!
+
+Our `Makefile` looked a little bit like this:
+
+```bash
+    sed 's/"integer pixelsamples" 4/"integer pixelsamples" ${SAMPLES}/' /tmp/scene.pbrt |\
+	sed 's/Film "image"/Film "image" "string filename" "${OUTFILE}"/' |\
+	sed 's/"float fov" \[24.56717103880224\]/"float fov" [10]/' |\
+	sed 's/Integrator "path"/Integrator "directlighting" "string strategy" "all"/' |\
+	sed '/WorldBegin/r sceneplus.pbrt'\
+	> /tmp/scene.out.pbrt
+```
+
+If we break it down:
+
+- Read in `/tmp/scene.pbrt`, and update the pixel samples using the `SAMPLES` environment variable.
+
+    `sed 's/"integer pixelsamples" 4/"integer pixelsamples" ${SAMPLES}/' /tmp/scene.pbrt |\`
+- Change the filename to the filename in the `OUTFILE` environment variable
+
+    `sed 's/Film "image"/Film "image" "string filename" "${OUTFILE}"/' |\`
+- Update the field of view from `24.*` to `10`
+
+    `sed 's/"float fov" \[24.56717103880224\]/"float fov" [10]/' |\`
+- Use a better integrator for improved lighting calculations
+
+    `sed 's/Integrator "path"/Integrator "directlighting" "string strategy" "all"/' |\`
+- Include `sceneplus.pbrt` after the `WorldBegin` directive
+
+    `sed '/WorldBegin/r sceneplus.pbrt'\`
+- Store the output of all that into `/tmp/scene.out.pbrt`
+
+    `> /tmp/scene.out.pbrt`
+
+The default variables set at the top of the Makefile are as follows:
+
+```
+SAMPLES ?= 10
+OUTFILE ?= pbrt.png
+```
+
+We also included code in the `Makefile` to `rsync` all textures and models to a remote machine which has many more cores than our MacBook Pro. We configured it to only do this if `SAMPLES` was greater than or equal to `512`. It also copied the resultant file back to our local machine.
+
+```bash
+if [ ${SAMPLES} -ge 512 ]; then \
+    rsync /tmp/scene.out.pbrt /tmp/mesh_*.ply /tmp/tex_*.png cluster:; \
+    time ssh cluster pbrt-v3/build/pbrt scene.out.pbrt; \
+    scp cluster:${OUTFILE} .; \
+else \
+    time pbrt /tmp/scene.out.pbrt; \
+fi
+```
+
+Finally, our `Makefile` then just called `open ${OUTFILE}` so that we can inspect the build output.
+
+Not needing to manually make edits repeatedly after every build allowed to us iterate rapdily.
