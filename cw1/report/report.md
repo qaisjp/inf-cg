@@ -117,11 +117,13 @@ You should get a photo like this:
 
 Below you can find the scene that will be modelled:
 
-![](../scene-main.jpg)
+![](scene-main.jpg)
 
 And the reproduced model:
 
+![](out.0.reproduced.scene.png)
 
+We only intend to add models that affect or be affected by the three boxy objects in near the back of this cupboard.
 
 ### Accurate model of the real-world lighting as in the original photograph (10)
 
@@ -163,13 +165,6 @@ Which produces something like this:
 
 ![](out.6.spot-fiddling-coneangle50-rgbi20-from-and-to-moved.png)
 
-### ‘Proxy’ model(s) of real-world object(s) that affect rendered objects (10)
-
-
-
-### Textures on real objects that appear on rendered object(s) (20)
-
-
 ## Rendering synthetic object
 
 ### Choose a synthetic object model from a 3D model library (.ply files) (5)
@@ -198,13 +193,31 @@ Used the Decimate modifier.
 
 Blender crashed a few times.
 
-https://free3d.com/3d-model/fruit-v1--195897.html
+In the end we settled on the two following textures:
+- [a fruit](https://free3d.com/3d-model/fruit-v1--195897.html)
+- [a combination wrench](https://free3d.com/3d-model/combination-wrench-v1--661572.html)
+
+![](external.fruit.jpg) ![](external.wrench.jpg)
+
+The above two models and assosciated models and textures were taken from Free3D website.
 
 ### Render of synthetic scene with above parameters (5)
 
 The final render looks a bit like this:
 
 ![](out.11.final.production.png)
+
+
+![](out.12.annotated.final.png)
+
+In the annotated image above, observe the following changes to the scene:
+
+1. Shadow from the black/green box appears on the superimposed orange.
+2. Reflection of the 23andme box appears on combination wrench
+3. Reflection of the box mic appears on the combination wrench
+4. Shadow of combination wrench appears on cupboard wall.
+    Also see `[!]` for shadow of orange appearing on cupboard wall.
+
 
 
 ## Compositing / Merging of synthetic objects on the real-world image
