@@ -1,6 +1,6 @@
 # Computer Graphics 2019 - Assignment 1
 
-Qais Patankar - s1620208 - 2018-10-01
+Qais Patankar - s1620208 - 2019-10-07
 
 ## PBRT
 
@@ -212,11 +212,11 @@ After placing all the objects, our render looks a bit like this:
 
 In the annotated image above, observe the following changes to the scene:
 
-1. Shadow from the black/green box appears on the superimposed orange.
+1. Shadow from the black/green box appears on the superimposed fruit.
 2. Reflection of the 23andme box appears on combination wrench
 3. Reflection of the box mic appears on the combination wrench
 4. Shadow of combination wrench appears on cupboard wall.
-    Also see `[!]` for shadow of orange appearing on cupboard wall.
+    Also see `[!]` for shadow of fruit appearing on cupboard wall.
 
 
 
@@ -250,7 +250,15 @@ Here is our pbrt render with the microphone box fixed:
 
 ![](out.13.micboxfix.png)
 
+### Compositing the scene
 
+We used GIMP's Path tool to cut out objects from the rendered scene and to superimpose them onto the original scene.
+
+To apply shadows effectively we put shadows on their own layer, tweak the opacity, and set the blend mode to `Darken only`.
+
+The final image looks like this:
+
+![](superimposed.jpg)
 
 ## Using pbrt is hard!
 
