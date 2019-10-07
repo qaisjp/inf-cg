@@ -167,31 +167,21 @@ Which produces something like this:
 
 ## Rendering synthetic object
 
-### Choose a synthetic object model from a 3D model library (.ply files) (5)
+### Choosing a synthetic object model
 
-We initially chose a measuring tape.
+We initially picked a [metal nut](https://www.artec3d.com/3d-models/metal-nut) to insert into the scene. We would be able to use a single Mirror texture.
 
-https://www.artec3d.com/3d-models/measuring-tape
+![](out.7.nut.too-detailed.png)
 
-It's something that would fit the area. It also has a reflective surface, and so.
+This is the output:
 
+![](out.9.nut.png)
 
-Used limited dissolve to reduce vertex count https://blender.stackexchange.com/questions/31467/how-to-reduce-vertex-count-on-a-mesh
+For some reason the mirror was not working effectively — it was too noisy. This might have been because the model is too detailed — there are too many polygons, as shown below:
 
-90 degrees was the value we used.
+![](out.8.nut.unlimited.edges.and.vertices.png)
 
-Due to limitations of the PBRT exporter we had to abandon this model.
-TODO add picture
-
-Instead we picked a metal nut
-
-https://www.artec3d.com/3d-models/metal-nut
-
-Still quite detailed, but can get away with a single Mirror texture.
-
-Used the Decimate modifier.
-
-Blender crashed a few times.
+We attempted to use the Decimate modifier to simplify the model, but this caused Blender to crash a few times.
 
 In the end we settled on the two following textures:
 - [a fruit](https://free3d.com/3d-model/fruit-v1--195897.html)
