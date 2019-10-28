@@ -28,8 +28,10 @@ int main(int argc, char* argv[]){
 	std::cout<<"d top level object contains "<<d.MemberCount()<<" members:"<<std::endl;
 
 	//iterating over members
-	for (Value::ConstMemberIterator itr = d.MemberBegin();itr != d.MemberEnd(); ++itr)
-	    printf("%s\n", itr->name.GetString());
+	// for (Value::ConstMemberIterator itr = d.MemberBegin();itr != d.MemberEnd(); ++itr)
+	//     printf("%s\n", itr->name.GetString());
+	for (auto &itr : d.GetObject())
+	    printf("%s\n", itr.name.GetString());
 
 	//querying members
 	std::cout<<"d has member 'scene':"<<(d.HasMember("scene")?"true":"false")<<std::endl;
