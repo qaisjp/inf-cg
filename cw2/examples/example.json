@@ -27,6 +27,30 @@
 				]
 			}
 		],
+		"materials": [
+			{
+				"name": "m1",
+				"ks": 0.4,
+				"kd": 0.8,
+				"specularexponent": 3,
+				"diffusecolor": [
+					0.4,
+					0.3,
+					0.4
+				]
+			},
+			{
+				"name": "m2",
+				"ks": 0.6,
+				"kd": 0.2,
+				"specularexponent": 10000,
+				"diffusecolor": [
+					0.4,
+					0.4,
+					0.4
+				]
+			}
+		],
 		"shapes": [
 			{
 				"type": "sphere",
@@ -36,16 +60,7 @@
 					0.4
 				],
 				"radius": 0.3,
-				"material": {
-					"ks": 0.4,
-					"kd": 0.8,
-					"specularexponent": 3,
-					"diffusecolor": [
-						0.4,
-						0.3,
-						0.4
-					]
-				}
+				"material": "m1"
 			},
 			{
 				"type": "sphere",
@@ -55,16 +70,7 @@
 					0.7
 				],
 				"radius": 0.1,
-				"material": {
-					"ks": 0.6,
-					"kd": 0.2,
-					"specularexponent": 10000,
-					"diffusecolor": [
-						0.4,
-						0.4,
-						0.4
-					]
-				}
+				"material": "m2"
 			}
 		]
 	}
