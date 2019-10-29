@@ -13,28 +13,21 @@
 #include "core/LightSource.h"
 #include "core/Shape.h"
 
-
 using namespace rapidjson;
 
-namespace rt{
+namespace rt {
 
 class Scene {
-public:
+   public:
+    Scene() {};
 
-	Scene(){};
+    void createScene(Value& scenespecs);
 
-	void createScene(Value& scenespecs);
-
-
-private:
-
-	std::vector<LightSource*> lightSources;
-	std::vector<Shape*> shapes;
-
+   private:
+    std::vector<LightSource*> lightSources;
+    std::vector<Shape*> shapes;
 };
 
-} //namespace rt
-
-
+}  // namespace rt
 
 #endif /* SCENE_H_ */

@@ -7,7 +7,8 @@
  * 0.624695 0.468521 0.624695 0
  * 4.000574 3.00043 4.000574 1
  *
- * Given the input matrix, the inverse matrix computed by our code should match the following values:
+ * Given the input matrix, the inverse matrix computed by our code should match
+ *the following values:
  * 0.707107 -0.331295 0.624695 0
  * 0 0.883452 0.468521 0
  * -0.707107 -0.331295 0.624695
@@ -28,33 +29,28 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 #include <iostream>
 
 #include "math/geometry.h"
 
+int main(int argc, char **argv) {
+    // define vector
+    Vec3f v(0, 1, 2);
 
-int main(int argc, char **argv)
-{
+    std::cerr << "Example vector:" << v << std::endl;
 
-//define vector
-Vec3f v(0, 1, 2);
+    Matrix44f a, b, c;
+    c = a * b;
 
+    Matrix44f d(0.707107, 0, -0.707107, 0, -0.331295, 0.883452, -0.331295, 0,
+                0.624695, 0.468521, 0.624695, 0, 4.000574, 3.00043, 4.000574,
+                1);
 
-std::cerr <<"Example vector:"<< v << std::endl;
+    std::cerr << "Example matrix:" << std::endl;
+    std::cerr << d << std::endl;
+    d.invert();
+    std::cerr << "Inverse of above matrix:" << std::endl;
+    std::cerr << d << std::endl;
 
-
-Matrix44f a, b, c;
-c = a * b;
-
-Matrix44f d(0.707107, 0, -0.707107, 0, -0.331295, 0.883452, -0.331295, 0, 0.624695, 0.468521, 0.624695, 0, 4.000574, 3.00043, 4.000574, 1);
-
-std::cerr<<"Example matrix:"<<std::endl;
-std::cerr << d << std::endl;
-d.invert();
-std::cerr<<"Inverse of above matrix:"<<std::endl;
-std::cerr << d << std::endl;
-
-return 0;
+    return 0;
 }
-

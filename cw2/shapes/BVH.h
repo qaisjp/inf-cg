@@ -9,17 +9,10 @@
 
 #include "core/Shape.h"
 
-namespace rt{
+namespace rt {
 
-class BVH: public Shape{
+class BVH : public Shape {};
 
-
-};
-
-
-
-} //namespace rt
-
-
+}  // namespace rt
 
 #endif /* BVH_H_ */

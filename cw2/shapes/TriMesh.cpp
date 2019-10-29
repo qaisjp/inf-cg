@@ -5,13 +5,4 @@
  */
 #include "TriMesh.h"
 
-
-namespace rt{
-
-
-
-
-
-} //namespace rt
-
-
+namespace rt {}  // namespace rt

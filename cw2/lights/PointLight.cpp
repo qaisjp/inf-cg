@@ -5,12 +5,4 @@
  */
 #include "PointLight.h"
 
-
-
-namespace rt{
-
-
-
-
-
-} //namespace rt
+namespace rt {}  // namespace rt

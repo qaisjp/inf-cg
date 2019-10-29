@@ -6,12 +6,4 @@
 
 #include "BlinnPhong.h"
 
-
-
-namespace rt{
-
-
-
-
-
-} //namespace rt
+namespace rt {}  // namespace rt

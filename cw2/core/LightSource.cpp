@@ -4,11 +4,4 @@
  */
 #include "LightSource.h"
 
-namespace rt{
-
-
-
-
-
-} //namespace rt
-
+namespace rt {}  // namespace rt

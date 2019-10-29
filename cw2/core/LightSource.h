@@ -6,19 +6,13 @@
 #ifndef LIGHTSOURCE_H_
 #define LIGHTSOURCE_H_
 
+namespace rt {
 
-namespace rt{
-
-class LightSource{
-public:
-
-
-private:
-
+class LightSource {
+   public:
+   private:
 };
 
-} //namespace rt
-
-
+}  // namespace rt
 
 #endif /* LIGHTSOURCE_H_ */

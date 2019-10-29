@@ -9,19 +9,10 @@
 
 #include "core/LightSource.h"
 
+namespace rt {
 
-namespace rt{
+class PointLight : public LightSource {};
 
-class PointLight: public LightSource{
-
-
-};
-
-
-
-} //namespace rt
-
-
-
+}  // namespace rt
 
 #endif /* POINTLIGHT_H_ */

@@ -5,13 +5,4 @@
  */
 #include "BVH.h"
 
-
-namespace rt{
-
-
-
-
-
-} //namespace rt
-
-
+namespace rt {}  // namespace rt

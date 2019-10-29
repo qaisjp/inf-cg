@@ -5,13 +5,4 @@
  */
 #include "AreaLight.h"
 
-
-
-
-namespace rt{
-
-
-
-
-
-} //namespace rt
+namespace rt {}  // namespace rt

@@ -9,18 +9,10 @@
 
 #include "core/Material.h"
 
+namespace rt {
 
-namespace rt{
+class BlinnPhong : public Material {};
 
-class BlinnPhong: public Material{
-
-
-};
-
-
-
-} //namespace rt
-
-
+}  // namespace rt
 
 #endif /* BLINNPHONG_H_ */

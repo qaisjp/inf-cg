@@ -4,13 +4,4 @@
  */
 #include "Material.h"
 
-
-namespace rt{
-
-
-
-
-
-} //namespace rt
-
-
+namespace rt {}  // namespace rt

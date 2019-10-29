@@ -9,18 +9,10 @@
 
 #include "core/Shape.h"
 
-namespace rt{
+namespace rt {
 
-class Triangle: public Shape{
+class Triangle : public Shape {};
 
-
-};
-
-
-
-} //namespace rt
-
-
-
+}  // namespace rt
 
 #endif /* TRIANGLE_H_ */

@@ -4,55 +4,55 @@
  * How-to example for parsing and manipulating json input
  */
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
-#include "rapidjson/istreamwrapper.h"
 #include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
 
 using namespace rapidjson;
 
+int main(int argc, char* argv[]) {
+    std::string jsonfile = "../examples/example.json";
 
-int main(int argc, char* argv[]){
+    // parse json input file
+    std::ifstream ifs(jsonfile);
+    IStreamWrapper is(ifs);
+    Document d;
+    d.ParseStream(is);
 
-	std::string jsonfile="../examples/example.json";
+    // variable d contains the top json object
+    std::cout << "Variable d contains json object:"
+              << (d.IsObject() ? "true" : "false") << std::endl;
+    std::cout << "d top level object contains " << d.MemberCount()
+              << " members:" << std::endl;
 
-	//parse json input file
-	std::ifstream ifs(jsonfile);
-	IStreamWrapper is(ifs);
-	Document d;
-	d.ParseStream(is);
+    // iterating over members
+    // for (Value::ConstMemberIterator itr = d.MemberBegin();itr !=
+    // d.MemberEnd(); ++itr)
+    //     printf("%s\n", itr->name.GetString());
+    for (auto& itr : d.GetObject()) printf("%s\n", itr.name.GetString());
 
-	//variable d contains the top json object
-	std::cout<<"Variable d contains json object:"<<(d.IsObject()?"true":"false")<<std::endl;
-	std::cout<<"d top level object contains "<<d.MemberCount()<<" members:"<<std::endl;
+    // querying members
+    std::cout << "d has member 'scene':"
+              << (d.HasMember("scene") ? "true" : "false") << std::endl;
 
-	//iterating over members
-	// for (Value::ConstMemberIterator itr = d.MemberBegin();itr != d.MemberEnd(); ++itr)
-	//     printf("%s\n", itr->name.GetString());
-	for (auto &itr : d.GetObject())
-	    printf("%s\n", itr.name.GetString());
+    // retieve member
+    Value& scene = d["scene"];
 
-	//querying members
-	std::cout<<"d has member 'scene':"<<(d.HasMember("scene")?"true":"false")<<std::endl;
+    std::cout << "scene has member 'shapes':"
+              << (scene.HasMember("shapes") ? "true" : "false") << std::endl;
 
-	//retieve member
-	Value& scene=d["scene"];
+    Value& shapes = scene["shapes"];
 
-	std::cout<<"scene has member 'shapes':"<<(scene.HasMember("shapes")?"true":"false")<<std::endl;
-
-
-	Value& shapes=scene["shapes"];
-
-	//iterate through arrays
-	std::cout<<"'shapes' is array:"<<(shapes.IsArray()?"true":"false")<<std::endl;
-	std::cout<<"'shapes' contains "<<shapes.Size()<<" elements:"<<std::endl;
-	for (SizeType i = 0; i < shapes.Size(); i++) // Retrieve values through GetXXX() functions
-	        printf("shapes[%d] = %s radius: %f \n", i,
-	        		shapes[i].GetObject()["type"].GetString(),
-					shapes[i].GetObject()["radius"].GetFloat());
-
-
-
-
+    // iterate through arrays
+    std::cout << "'shapes' is array:" << (shapes.IsArray() ? "true" : "false")
+              << std::endl;
+    std::cout << "'shapes' contains " << shapes.Size()
+              << " elements:" << std::endl;
+    for (SizeType i = 0; i < shapes.Size();
+         i++)  // Retrieve values through GetXXX() functions
+        printf("shapes[%d] = %s radius: %f \n", i,
+               shapes[i].GetObject()["type"].GetString(),
+               shapes[i].GetObject()["radius"].GetFloat());
 }

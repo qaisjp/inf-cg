@@ -8,90 +8,59 @@
 
 #include "rapidjson/document.h"
 
-
 using namespace rapidjson;
 
-namespace rt{
+namespace rt {
 
-class Camera{
-public:
+class Camera {
+   public:
+    //
+    // Constructors
+    //
+    Camera() {};
+    Camera(int height, int width, int fov)
+        : height(height), width(width), fov(fov) {};
 
-	//
-	// Constructors
-	//
-	Camera(){};
-	Camera(int height, int width, int fov):height(height), width(width), fov(fov){};
+    //
+    // Destructor
+    //
+    virtual ~Camera();
 
-	//
-	// Destructor
-	//
-	virtual ~Camera();
+    //
+    // factory function : returns camera instance dynamically based on camera
+    // specifications
+    //
+    static Camera* createCamera(Value& cameraSpecs);
 
+    //
+    // print function (to be implemented by the subclasses )
+    //
+    virtual void printCamera() = 0;
 
-	//
-	// factory function : returns camera instance dynamically based on camera specifications
-	//
-	static Camera* createCamera(Value& cameraSpecs);
+    //
+    // other camera functions (to complete)
+    //
 
+    //
+    // Getters and Setters
+    //
+    int getHeight() const { return height; }
 
-	//
-	// print function (to be implemented by the subclasses )
-	//
-	virtual void printCamera()=0;
+    void setHeight(int height) { this->height = height; }
 
+    int getWidth() const { return width; }
 
+    void setWidth(int width) { this->width = width; }
 
-	//
-	// other camera functions (to complete)
-	//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//
-	// Getters and Setters
-	//
-	int getHeight() const {
-		return height;
-	}
-
-	void setHeight(int height) {
-		this->height = height;
-	}
-
-	int getWidth() const {
-		return width;
-	}
-
-	void setWidth(int width) {
-		this->width = width;
-	}
-
-
-
-protected:
-
-	//
-	//camera members
-	//
-	int height;
-	int width;
-	int fov; //field of view
-
+   protected:
+    //
+    // camera members
+    //
+    int height;
+    int width;
+    int fov;  // field of view
 };
 
-} //namespace rt
-
-
+}  // namespace rt
 
 #endif /* CAMERA_H_ */

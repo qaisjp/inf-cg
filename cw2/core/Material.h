@@ -6,18 +6,13 @@
 #ifndef MATERIAL_H_
 #define MATERIAL_H_
 
-namespace rt{
+namespace rt {
 
-class Material{
-public:
-
-
-private:
+class Material {
+   public:
+   private:
 };
 
-
-} //namespace rt
-
-
+}  // namespace rt
 
 #endif /* MATERIAL_H_ */

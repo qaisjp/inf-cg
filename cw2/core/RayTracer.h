@@ -5,37 +5,25 @@
 #ifndef RAYTRACER_H_
 #define RAYTRACER_H_
 
-#include "math/geometry.h"
 #include "core/Camera.h"
 #include "core/Scene.h"
+#include "math/geometry.h"
 
-namespace rt{
-
-
+namespace rt {
 
 /*
  * Raytracer class declaration
  */
 class RayTracer {
-public:
+   public:
+    RayTracer();
 
-	RayTracer();
+    static Vec3f* render(Camera* camera, Scene* scene, int nbounces);
+    static Vec3f* tonemap(Vec3f* pixelbuffer);
 
-	static Vec3f* render(Camera* camera, Scene* scene, int nbounces);
-	static Vec3f* tonemap(Vec3f* pixelbuffer);
-
-
-private:
-
-
+   private:
 };
 
-
-
-
-} //namespace rt
-
-
+}  // namespace rt
 
 #endif /* RAYTRACER_H_ */
-

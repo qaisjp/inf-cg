@@ -9,18 +9,10 @@
 
 #include "core/Shape.h"
 
-namespace rt{
+namespace rt {
 
-class TriMesh: public Shape{
+class TriMesh : public Shape {};
 
-
-};
-
-
-
-} //namespace rt
-
-
-
+}  // namespace rt
 
 #endif /* TRIMESH_H_ */

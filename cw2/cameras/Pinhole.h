@@ -9,33 +9,27 @@
 
 #include "core/Camera.h"
 
-namespace rt{
+namespace rt {
 
-class Pinhole:public Camera{
-public:
+class Pinhole : public Camera {
+   public:
+    //
+    // Constructors
+    //
+    Pinhole();
+    Pinhole(int width, int height, int fov);
 
-	//
-	// Constructors
-	//
-	Pinhole();
-	Pinhole(int width, int height, int fov);
+    //
+    // Destructor
+    //
+    ~Pinhole() {};
 
-	//
-	//Destructor
-	//
-	~Pinhole(){};
-
-	//
-	// print function (implementing abstract function of base class)
-	//
-	void printCamera();
+    //
+    // print function (implementing abstract function of base class)
+    //
+    void printCamera();
 };
 
-
-
-} //namespace rt
-
-
-
+}  // namespace rt
 
 #endif /* PINHOLE_H_ */
