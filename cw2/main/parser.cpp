@@ -46,12 +46,24 @@ Shape* Parser::ParseShape(rapidjson::Value& value) {
 
     const auto& type = d["type"];
     if (type == "sphere") {
-        shape = new Sphere(Vec3f(0, 0, 0), 0);
+        auto center = ParseVec3f(d["center"]);
+        auto radius = d["radius"].GetFloat();
+        shape = new Sphere(center, radius);
     } else {
         throw std::invalid_argument("unknown type: " + GETSTR_TO_STD(type));
     }
 
     return shape;
+}
+
+Vec3f Parser::ParseVec3f(rapidjson::Value& value) {
+    uint field = 0;
+    auto vec = Vec3f();
+    for (auto& f : value.GetArray()) {
+        vec[field] = f.GetFloat();
+        field++;
+    }
+    return vec;
 }
 
 }  // namespace rt

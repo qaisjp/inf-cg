@@ -7,7 +7,10 @@
 
 namespace rt {
 
-Sphere::Sphere(Vec3f center, float radius) : center(center), radius(radius) {}
+Sphere::Sphere(Vec3f center, float radius) : center(center), radius(radius) {
+    std::printf("Sphere(center=Vecf(%f, %f, %f) radius=%f)\n", center.x,
+                center.y, center.z, radius);
+}
 
 Sphere::~Sphere() {}
 
