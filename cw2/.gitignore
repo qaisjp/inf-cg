@@ -1,3 +1,4 @@
+.vscode/settings.json
 build
 examples/*.ppm
 # Created by https://www.gitignore.io/api/c,c++,cmake
