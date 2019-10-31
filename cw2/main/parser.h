@@ -6,14 +6,14 @@
 
 namespace rt {
 
+class Scene;
 class Camera;
 class Pinhole;
-class LightSource;
-class Material;
-class PointLight;
-class Scene;
 class Shape;
 class Sphere;
+class LightSource;
+class PointLight;
+class Material;
 
 class Parser {
    public:
