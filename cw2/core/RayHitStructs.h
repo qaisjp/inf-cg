@@ -1,9 +1,4 @@
-/*
- * RayHitStructs.h
- */
-
-#ifndef CORE_RAYHITSTRUCTS_H_
-#define CORE_RAYHITSTRUCTS_H_
+#pragma once
 
 #include "math/geometry.h"
 
@@ -12,11 +7,7 @@ namespace rt {
 /*
  * Ray structure definition
  */
-enum RayType {
-    PRIMARY,
-    SECONDARY,
-    SHADOW
-};
+enum RayType { PRIMARY, SECONDARY, SHADOW };
 
 struct Ray {
     RayType raytype;
@@ -29,5 +20,3 @@ struct Hit {
                   //----------Hit variables to be filled------
 };
 }  // namespace rt
-
-#endif /* CORE_RAYHITSTRUCTS_H_ */
