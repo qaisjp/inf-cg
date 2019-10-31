@@ -1,11 +1,4 @@
-/*
- * Sphere.h
- *
- *
- */
-
-#ifndef SPHERE_H_
-#define SPHERE_H_
+#pragma once
 
 #include "core/RayHitStructs.h"
 #include "core/Shape.h"
@@ -18,16 +11,15 @@ class Sphere : public Shape {
     //
     // Constructors
     //
-    Sphere();
-    Sphere(Vec3f center, float radius) : center(center), radius(radius) {};
+    Sphere(Vec3f center, float radius);
 
-    virtual ~Sphere();
+    ~Sphere();
 
     //
     // Functions that need to be implemented, since Sphere is a subclass of
     // Shape
     //
-    Hit intersect(Ray ray);
+    Hit intersect(Ray ray) override;
 
    private:
     Vec3f center;
@@ -35,5 +27,3 @@ class Sphere : public Shape {
 };
 
 }  // namespace rt
-
-#endif /* SPHERE_H_ */

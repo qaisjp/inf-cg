@@ -1,10 +1,4 @@
-/*
- * Shape.h
- *
- */
-
-#ifndef SHAPE_H_
-#define SHAPE_H_
+#pragma once
 
 #include "core/Material.h"
 #include "core/RayHitStructs.h"
@@ -16,12 +10,12 @@ class Shape {
     //
     // Constructors
     //
-    Shape();
+    Shape() {};
 
     //
     // Destructor (must be overriden in subclass)
     //
-    virtual ~Shape();
+    virtual ~Shape() {}
 
     //
     // Shape abstract methods (to be implemented by subclasses)
@@ -33,5 +27,3 @@ class Shape {
 };
 
 }  // namespace rt
-
-#endif /* SHAPE_H_ */

@@ -14,7 +14,10 @@ class Parser {
         ~Parser();
 
         static Scene* ParseScene(rapidjson::Value& scene);
-        static std::vector<Shape*>* ParseShapes(rapidjson::Value const &value);
+
+        // Shapes
+        static std::vector<Shape*>* ParseShapes(rapidjson::Value& value);
+        static Shape* ParseShape(rapidjson::Value& value);
 };
 
 } // namespace rt

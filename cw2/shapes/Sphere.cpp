@@ -7,6 +7,13 @@
 
 namespace rt {
 
+Sphere::Sphere(Vec3f center, float radius)
+    : center(center), radius(radius) {
+    std::printf("Creating Sphere!");
+}
+
+Sphere::~Sphere() {}
+
 /**
  * Computes whether a ray hit the specific instance of a sphere shape and
  *returns the hit data
