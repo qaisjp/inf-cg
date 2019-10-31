@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
     std::ifstream ifs(inputFile);
     IStreamWrapper is(ifs);
     Document d;  // d holds the complete json object
-    d.ParseStream(is);
+    d.ParseStream<kParseCommentsFlag | kParseTrailingCommasFlag>(is);
 
     // generate a camera according to the input file
     Camera* camera = Camera::createCamera(d["camera"]);
