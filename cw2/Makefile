@@ -1,6 +1,12 @@
-.PHONY: app test
+.PHONY: app test remake
 app:
 	cd build && make raytracer/fast && cd ..
+
+remake:
+	rm -rf build
+	mkdir build
+	cd build && cmake3 ..
+	${MAKE} app
 
 F?=examples/example.json
 
