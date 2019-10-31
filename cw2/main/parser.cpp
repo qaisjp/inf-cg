@@ -1,6 +1,8 @@
 #include "parser.h"
 #include "core/Scene.h"
 
+#define GETSTR_TO_STD(X) std::string(X.GetString(), X.GetStringLength())
+
 namespace rt {
 
 Parser::Parser() {}
@@ -11,8 +13,7 @@ Scene* Parser::ParseScene(rapidjson::Value& scene) {
 
 
     for (auto &obj : scene.GetObject()) {
-        auto& name = obj.name;
-        auto key = std::string(name.GetString(), name.GetStringLength());
+        auto key = GETSTR_TO_STD(obj.name);
 
         std::printf("%s ", key.data());
         if (key == "shapes") {
