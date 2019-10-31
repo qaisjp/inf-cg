@@ -5,7 +5,7 @@ app:
 remake:
 	rm -rf build
 	mkdir build
-	cd build && cmake3 ..
+	cd build && cmake3 -DCMAKE_BUILD_TYPE=Debug ..
 	${MAKE} app
 
 F?=examples/example.json
