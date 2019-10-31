@@ -1,7 +1,10 @@
 #include "parser.h"
 #include <stdexcept>
+#include "core/LightSource.h"
 #include "core/Scene.h"
-#include "shapes/Sphere.h"
+#include "lights/AreaLight.h"
+#include "lights/PointLight.h"
+#include "shapes/shapes.h"
 
 #define GETSTR_TO_STD(X) std::string(X.GetString(), X.GetStringLength())
 
@@ -18,26 +21,31 @@ Scene* Parser::ParseScene(rapidjson::Value& scene) {
 
         std::printf("Parsing scene.%s\n", GETSTR_TO_STD(key).data());
         if (key == "shapes") {
-            ParseShapes(obj.value);
+            ParseMany<Shape>(obj.value);
+        } else if (key == "materials") {
+            ParseMany<Material>(obj.value);
+        } else if (key == "lightsources") {
+            ParseMany<LightSource>(obj.value);
         }
     }
 
     return s;
 }
 
-std::vector<Shape*>* Parser::ParseShapes(rapidjson::Value& value) {
-    auto shapes = new std::vector<Shape*>;
+template <class T>
+std::vector<T*>* Parser::ParseMany(rapidjson::Value& value) {
+    auto xs = new std::vector<T*>;
     for (auto& val : value.GetArray()) {
-        auto shape = ParseShape(val);
-        if (shape) {
-            shapes->push_back(shape);
+        T* x;
+        Parse(x, val);
+        if (x) {
+            xs->push_back(x);
         }
     }
-    return shapes;
+    return xs;
 }
 
-Shape* Parser::ParseShape(rapidjson::Value& value) {
-    Shape* shape = nullptr;
+void Parser::Parse(Shape*& shape, rapidjson::Value& value) {
     const auto& d = value.GetObject();
 
     if (!d.HasMember("type")) {
@@ -46,14 +54,46 @@ Shape* Parser::ParseShape(rapidjson::Value& value) {
 
     const auto& type = d["type"];
     if (type == "sphere") {
-        auto center = ParseVec3f(d["center"]);
-        auto radius = d["radius"].GetFloat();
-        shape = new Sphere(center, radius);
+        Sphere* sphere = nullptr;
+        Parse(sphere, value);
+        shape = sphere;
     } else {
         throw std::invalid_argument("unknown type: " + GETSTR_TO_STD(type));
     }
+}
 
-    return shape;
+void Parser::Parse(Sphere*& sphere, rapidjson::Value& d) {
+    auto center = ParseVec3f(d["center"]);
+    auto radius = d["radius"].GetFloat();
+    sphere = new Sphere(center, radius);
+}
+
+void Parser::Parse(LightSource*& light, rapidjson::Value& value) {
+    const auto& d = value.GetObject();
+
+    if (!d.HasMember("type")) {
+        throw std::invalid_argument("LightSource missing type");
+    }
+
+    const auto& type = d["type"];
+    if (type == "pointlight") {
+        PointLight* point = nullptr;
+        Parse(point, value);
+        light = point;
+    } else {
+        throw std::invalid_argument("unknown type: " + GETSTR_TO_STD(type));
+    }
+}
+
+void Parser::Parse(PointLight*& light, rapidjson::Value& d) {
+    auto pos = ParseVec3f(d["position"]);
+    auto intensity = ParseVec3f(d["intensity"]);
+    light = new PointLight();  // pos, intensity);
+}
+
+void Parser::Parse(Material*& mat, rapidjson::Value& d) {
+    // TODO
+    mat = nullptr;
 }
 
 Vec3f Parser::ParseVec3f(rapidjson::Value& value) {
