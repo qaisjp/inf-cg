@@ -17,10 +17,23 @@ Scene* Parser::ParseScene(rapidjson::Value& scene) {
 
         std::printf("%s ", key.data());
         if (key == "shapes") {
+            ParseShapes(obj.value);
         }
     }
+    std::printf("\n");
 
     return s;
+}
+
+std::vector<Shape*>* Parser::ParseShapes(rapidjson::Value& value) {
+    for (auto& val : value.GetArray()) {
+        auto shape = val.GetObject();
+
+        // auto type = GETSTR_TO_STD(shape["type"]); // std::string(shape.name.GetString(), shape.name.GetStringLength());
+        // std::printf("%s \n", type.data());
+    }
+
+    return nullptr;
 }
 
 }
