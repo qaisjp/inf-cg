@@ -1,7 +1,7 @@
 #include "parser.h"
+#include <stdexcept>
 #include "core/Scene.h"
 #include "shapes/Sphere.h"
-#include <stdexcept>
 
 #define GETSTR_TO_STD(X) std::string(X.GetString(), X.GetStringLength())
 
@@ -13,16 +13,13 @@ Parser::~Parser() {}
 Scene* Parser::ParseScene(rapidjson::Value& scene) {
     auto s = new Scene();
 
+    for (auto& obj : scene.GetObject()) {
+        const auto& key = obj.name;
 
-    for (auto &obj : scene.GetObject()) {
-        auto key = GETSTR_TO_STD(obj.name);
-
-        std::printf("%s: ", key.data());
+        std::printf("Parsing scene.%s\n", GETSTR_TO_STD(key).data());
         if (key == "shapes") {
-
             ParseShapes(obj.value);
         }
-        std::printf("\n");
     }
 
     return s;
@@ -32,24 +29,29 @@ std::vector<Shape*>* Parser::ParseShapes(rapidjson::Value& value) {
     auto shapes = new std::vector<Shape*>;
     for (auto& val : value.GetArray()) {
         auto shape = ParseShape(val);
-        shapes->push_back(shape);
+        if (shape) {
+            shapes->push_back(shape);
+        }
     }
     return shapes;
 }
 
 Shape* Parser::ParseShape(rapidjson::Value& value) {
     Shape* shape = nullptr;
-    auto d = value.GetObject();
-    auto type = GETSTR_TO_STD(d["type"]);
+    const auto& d = value.GetObject();
 
-    std::printf("%s ", type.data());
+    if (!d.HasMember("type")) {
+        throw std::invalid_argument("shape missing type");
+    }
+
+    const auto& type = d["type"];
     if (type == "sphere") {
-        shape = new Sphere(Vec3f(0,0,0), 0);
+        shape = new Sphere(Vec3f(0, 0, 0), 0);
     } else {
-        throw std::invalid_argument("Unknown type");
+        throw std::invalid_argument("unknown type: " + GETSTR_TO_STD(type));
     }
 
     return shape;
 }
 
-}
+}  // namespace rt
