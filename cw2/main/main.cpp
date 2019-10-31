@@ -38,13 +38,15 @@ int main(int argc, char* argv[]) {
     d.ParseStream<kParseCommentsFlag | kParseTrailingCommasFlag>(is);
 
     // generate a camera according to the input file
-    Camera* camera = Camera::createCamera(d["camera"]);
+    Camera* camera = nullptr;
+    Parser::Parse(camera, d["camera"]);
 
     // print camera data (based on the input file provided)
     camera->printCamera();
 
     // generate the scene according to the input file
-    Scene* scene = Parser::ParseScene(d["scene"]);
+    Scene* scene = nullptr;
+    Parser::Parse(scene, d["scene"]);
 
     //
     // Main function, render scene

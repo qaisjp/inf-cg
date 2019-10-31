@@ -4,7 +4,17 @@
 		"type": "pinhole",
 		"width": 800,
 		"height": 800,
-		"fov": 35
+		"fov": 35,
+		"from": [
+			1,
+			1,
+			1
+		],
+		"to": [
+			0,
+			0,
+			0
+		],
 	},
 	"scene": {
 		"backgroundcolor": [

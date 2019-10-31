@@ -17,20 +17,14 @@ class Camera {
     //
     // Constructors
     //
-    Camera() {};
-    Camera(int height, int width, int fov)
-        : height(height), width(width), fov(fov) {};
+    Camera(){};
+    Camera(int width, int height, int fov)
+        : height(height), width(width), fov(fov){};
 
     //
     // Destructor
     //
     virtual ~Camera();
-
-    //
-    // factory function : returns camera instance dynamically based on camera
-    // specifications
-    //
-    static Camera* createCamera(Value& cameraSpecs);
 
     //
     // print function (to be implemented by the subclasses )

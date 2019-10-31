@@ -6,6 +6,8 @@
 
 namespace rt {
 
+class Camera;
+class Pinhole;
 class LightSource;
 class Material;
 class PointLight;
@@ -18,10 +20,15 @@ class Parser {
     Parser();
     ~Parser();
 
-    static Scene* ParseScene(rapidjson::Value& scene);
-
     template <class T>
     static std::vector<T*>* ParseMany(rapidjson::Value& value);
+
+    // Scene
+    static void Parse(Scene*& ret, rapidjson::Value& value);
+
+    // Cameras
+    static void Parse(Camera*& ret, rapidjson::Value& value);
+    static void Parse(Pinhole*& cam, rapidjson::Value& d);
 
     // Shapes
     static void Parse(Shape*& ret, rapidjson::Value& value);
