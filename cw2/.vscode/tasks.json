@@ -9,7 +9,7 @@
             "options": {
                 "cwd": "${workspaceFolder}/build"
             },
-            "command": "make",
+            "command": "make raytracer/fast",
             "problemMatcher": [
                 "$gcc"
             ]
