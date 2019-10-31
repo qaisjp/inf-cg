@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
         RayTracer::render(camera, scene, d["nbounces"].GetInt());
 
     // convert linear RGB pixel values [0-1] to range 0-255
-    RayTracer::tonemap(pixelbuffer);
+    RayTracer::tonemap(camera->getWidth() * camera->getHeight(), pixelbuffer);
 
     std::printf("Output file: %s\n", outputFile);
 

@@ -19,7 +19,7 @@ class RayTracer {
     RayTracer();
 
     static Vec3f* render(Camera* camera, Scene* scene, int nbounces);
-    static Vec3f* tonemap(Vec3f* pixelbuffer);
+    static Vec3f* tonemap(size_t size, Vec3f* pixelbuffer);
 
    private:
 };
