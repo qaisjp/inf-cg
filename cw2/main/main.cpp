@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 
+#define RAPIDJSON_HAS_STDSTRING 1
+
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
 
@@ -15,6 +17,7 @@
 #include "core/Camera.h"
 #include "core/RayTracer.h"
 #include "core/Scene.h"
+#include "parser.h"
 
 using namespace rt;
 using namespace rapidjson;
@@ -41,8 +44,7 @@ int main(int argc, char* argv[]) {
     camera->printCamera();
 
     // generate the scene according to the input file
-    Scene* scene = new Scene();
-    scene->createScene(d["scene"]);
+    Scene* scene = Parser::ParseScene(d["scene"]);
 
     //
     // Main function, render scene
