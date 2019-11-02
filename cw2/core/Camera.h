@@ -3,58 +3,67 @@
  *
  */
 
-#ifndef CAMERA_H_
-#define CAMERA_H_
+#pragma once
 
+#include <math/geometry.h>
 #include "rapidjson/document.h"
 
 using namespace rapidjson;
 
 namespace rt {
 
-class Camera {
-   public:
-    //
-    // Constructors
-    //
-    Camera(){};
-    Camera(int width, int height, int fov)
-        : height(height), width(width), fov(fov){};
+    class Camera {
+    public:
+        //
+        // Constructors
+        //
+        Camera() {};
 
-    //
-    // Destructor
-    //
-    virtual ~Camera();
+        Camera(int width, int height, int fov)
+                : height(height), width(width), fov(fov) {};
 
-    //
-    // print function (to be implemented by the subclasses )
-    //
-    virtual void printCamera() = 0;
+        //
+        // Destructor
+        //
+        virtual ~Camera();
 
-    //
-    // other camera functions (to complete)
-    //
+        //
+        // print function (to be implemented by the subclasses )
+        //
+        virtual void printCamera() = 0;
 
-    //
-    // Getters and Setters
-    //
-    int getHeight() const { return height; }
+        //
+        // other camera functions (to complete)
+        //
 
-    void setHeight(int height) { this->height = height; }
+        //
+        // Getters and Setters
+        //
+        int getHeight() const { return height; }
 
-    int getWidth() const { return width; }
+        void setHeight(int height) { this->height = height; }
 
-    void setWidth(int width) { this->width = width; }
+        int getWidth() const { return width; }
 
-   protected:
-    //
-    // camera members
-    //
-    int height;
-    int width;
-    int fov;  // field of view
-};
+        void setWidth(int width) { this->width = width; }
+
+        static Matrix44<float> lookAt(const Vec3<float> &from, const Vec3<float> &to, const Vec3<float> &tmp);
+
+    protected:
+        //
+        // camera members
+        //
+        int height;
+        int width;
+        
+    public:
+        int getFov() const {
+            return fov;
+        }
+
+    protected:
+        int fov;  // field of view
+    };
 
 }  // namespace rt
 
-#endif /* CAMERA_H_ */
