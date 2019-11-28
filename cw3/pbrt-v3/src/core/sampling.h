@@ -43,8 +43,16 @@
 #include "geometry.h"
 #include "rng.h"
 #include <algorithm>
+#include <random>
 
 namespace pbrt {
+
+// Sampling Function Definitions
+double sampleGauss(std::default_random_engine generator, std::normal_distribution<double> distribution);
+void PoissonSample1D(Float *samp, int nSamples, RNG &rng,
+                         bool jitter);
+void PoissonSample2D(Point2f *samp, int nx, int ny, RNG &rng,
+                         bool jitter);
 
 // Sampling Declarations
 void StratifiedSample1D(Float *samples, int nsamples, RNG &rng,
