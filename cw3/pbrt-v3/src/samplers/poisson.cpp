@@ -16,6 +16,11 @@ void PoissonSampler::StartPixel(const Point2i &p) {
     auto sample1D = (PoissonSample1D_fn) PoissonSample1D;
     auto sample2D = (PoissonSample2D_fn) PoissonSample2D;
 
+    if (relaxed) {
+        sample1D = (PoissonSample1D_fn) PoissonRelaxedSample1D;
+        sample2D = (PoissonSample2D_fn) PoissonRelaxedSample2D;
+    }
+
     // Generate single poisson samples for the pixel
     for (size_t i = 0; i < samples1D.size(); ++i) {
         sample1D(&samples1D[i][0], samplesPerPixel, rng, radius);
@@ -48,8 +53,9 @@ std::unique_ptr<Sampler> PoissonSampler::Clone(int seed) {
 PoissonSampler *CreatePoissonSampler(const ParamSet &params) {
     int samplesPerPixel = params.FindOneInt("pixelsamples", 16);
     int nSampledDimensions = params.FindOneInt("dimensions", 4);
-    Float radius = params.FindOneFloat("radius", 0.0001);
+    Float radius = params.FindOneFloat("radius", 0.1);
     bool relaxed = params.FindOneBool("relaxed", false);
+    std::cout << "Relaxed: " << relaxed << std::endl;
     if (PbrtOptions.quickRender) samplesPerPixel = 1;
     return new PoissonSampler(samplesPerPixel, nSampledDimensions, relaxed, radius);
 }

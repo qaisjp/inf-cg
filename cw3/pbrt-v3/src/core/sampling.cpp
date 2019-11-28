@@ -38,6 +38,31 @@
 
 namespace pbrt {
 
+
+
+// Sampling Function Definitions
+bool PoissonRelaxedSample1D(Float *samp, int nSamples, RNG &rng, Float minRadius) {
+    Float radius = 1;
+    while (!PoissonSample1D(samp, nSamples, rng, radius)) {
+        if (radius == minRadius)
+            return false;
+
+        radius *= .99;
+    }
+    return true;
+}
+
+bool PoissonRelaxedSample2D(Point2f *samp, int nSamples, RNG &rng, Float minRadius) {
+    Float radius = 1;
+    while (!PoissonSample2D(samp, nSamples, rng, radius)) {
+        if (radius == minRadius)
+            return false;
+
+        radius *= .99;
+    }
+    return true;
+}
+
 // Sampling Function Definitions
 bool PoissonSample1D(Float *samp, int nSamples, RNG &rng, Float radius) {
     std::vector<Float> points;

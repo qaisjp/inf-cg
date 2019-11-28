@@ -48,6 +48,8 @@
 namespace pbrt {
 
 // Sampling Function Definitions
+bool PoissonRelaxedSample1D(Float *samp, int nSamples, RNG &rng, Float radius);
+bool PoissonRelaxedSample2D(Point2f *samp, int nSamples, RNG &rng, Float radius);
 bool PoissonSample1D(Float *samp, int nSamples, RNG &rng, Float radius);
 bool PoissonSample2D(Point2f *samp, int nSamples, RNG &rng, Float radius);
 
