@@ -39,24 +39,71 @@
 namespace pbrt {
 
 // Sampling Function Definitions
-void PoissonSample1D(Float *samp, int nSamples, RNG &rng, bool jitter) {
-  Float invNSamples = (Float)1 / nSamples;
-  for (int i = 0; i < nSamples; ++i) {
-    Float delta = jitter ? rng.UniformFloat() : 0.5f;
-    samp[i] = std::min((i + delta) * invNSamples, OneMinusEpsilon);
-  }
+bool PoissonSample1D(Float *samp, int nSamples, RNG &rng, Float radius) {
+    std::vector<Float> points;
+    int discardCount = 0;
+    for (int i = 0; i < nSamples; ++i) {
+        auto newPoint = rng.UniformFloat();
+        bool discard = false;
+        for (auto p : points) {
+            if (newPoint - p <= radius) {
+                discard = true;
+                break;
+            }
+        }
+
+        // If we discard this point...
+        if (discard) {
+            i--; // reattempt this sample
+            discardCount++; // increment the discarded sample counter
+            if (discardCount >= 1024) {
+                return false;
+            }
+            continue;
+        }
+
+        // reset the discarded sample counter
+        discardCount = 0;
+        points.push_back(newPoint);
+        samp[i] = newPoint;
+    }
+
+    return true;
 }
 
-void PoissonSample2D(Point2f *samp, int nx, int ny, RNG &rng, bool jitter) {
-  Float dx = (Float)1 / nx, dy = (Float)1 / ny;
-  for (int y = 0; y < ny; ++y)
-    for (int x = 0; x < nx; ++x) {
-      Float jx = jitter ? rng.UniformFloat() : 0.5f;
-      Float jy = jitter ? rng.UniformFloat() : 0.5f;
-      samp->x = std::min((x + jx) * dx, OneMinusEpsilon);
-      samp->y = std::min((y + jy) * dy, OneMinusEpsilon);
-      ++samp;
+bool PoissonSample2D(Point2f *samp, int nSamples, RNG &rng, Float radius) {
+    std::vector<Point2f> points;
+    int discardCount = 0;
+    for (int i = 0; i < nSamples; ++i) {
+        auto newPoint = Point2f(rng.UniformFloat(), rng.UniformFloat());
+        bool discard = false;
+        for (auto p : points) {
+            auto relPoint = newPoint - p;
+            auto distance = sqrt((relPoint.x * relPoint.x) + (relPoint.y * relPoint.y));
+
+            if (distance <= radius) {
+                discard = true;
+                break;
+            }
+        }
+
+        // If we discard this point...
+        if (discard) {
+            i--; // reattempt this sample
+            discardCount++; // increment the discarded sample counter
+            if (discardCount >= 1024) {
+                return false;
+            }
+            continue;
+        }
+
+        // reset the discarded sample counter
+        discardCount = 0;
+        points.push_back(newPoint);
+        samp[i] = newPoint;
     }
+
+    return true;
 }
 
 // Sampling Function Definitions

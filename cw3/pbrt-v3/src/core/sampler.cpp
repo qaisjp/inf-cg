@@ -97,6 +97,10 @@ const Point2f *Sampler::Get2DArray(int n) {
     return &sampleArray2D[array2DOffset++][currentPixelSampleIndex * n];
 }
 
+/**
+ * BEGIN PixelSampler CODE
+ */
+
 PixelSampler::PixelSampler(int64_t samplesPerPixel, int nSampledDimensions)
     : Sampler(samplesPerPixel) {
     for (int i = 0; i < nSampledDimensions; ++i) {
@@ -132,6 +136,10 @@ Point2f PixelSampler::Get2D() {
     else
         return Point2f(rng.UniformFloat(), rng.UniformFloat());
 }
+
+/**
+ * BEGIN GlobalSampler CODE
+ */
 
 void GlobalSampler::StartPixel(const Point2i &p) {
     ProfilePhase _(Prof::StartPixel);
