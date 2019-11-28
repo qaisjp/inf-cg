@@ -10,26 +10,30 @@ namespace pbrt {
 void PoissonSampler::StartPixel(const Point2i &p) {
     ProfilePhase _(Prof::StartPixel);
 
+    typedef bool (*PoissonSample1D_fn)(Float *samp, int nSamples, RNG &rng, Float radius);
+    typedef bool (*PoissonSample2D_fn)(Point2f *samp, int nSamples, RNG &rng, Float radius);
 
+    auto sample1D = (PoissonSample1D_fn) PoissonSample1D;
+    auto sample2D = (PoissonSample2D_fn) PoissonSample2D;
 
     // Generate single poisson samples for the pixel
     for (size_t i = 0; i < samples1D.size(); ++i) {
-        PoissonSample1D(&samples1D[i][0], samplesPerPixel, rng, radius);
+        sample1D(&samples1D[i][0], samplesPerPixel, rng, radius);
     }
     for (size_t i = 0; i < samples2D.size(); ++i) {
-        PoissonSample2D(&samples2D[i][0], samplesPerPixel, rng, radius);
+        sample2D(&samples2D[i][0], samplesPerPixel, rng, radius);
     }
 
     // Generate arrays of poisson samples for the pixel
     for (size_t i = 0; i < samples1DArraySizes.size(); ++i)
         for (int64_t j = 0; j < samplesPerPixel; ++j) {
             int count = samples1DArraySizes[i];
-            PoissonSample1D(&sampleArray1D[i][j * count], samplesPerPixel, rng, radius);
+            sample1D(&sampleArray1D[i][j * count], samplesPerPixel, rng, radius);
         }
     for (size_t i = 0; i < samples2DArraySizes.size(); ++i)
         for (int64_t j = 0; j < samplesPerPixel; ++j) {
             int count = samples2DArraySizes[i];
-            PoissonSample2D(&sampleArray2D[i][j * count], samplesPerPixel, rng, radius);
+            sample2D(&sampleArray2D[i][j * count], samplesPerPixel, rng, radius);
         }
 
     PixelSampler::StartPixel(p);
