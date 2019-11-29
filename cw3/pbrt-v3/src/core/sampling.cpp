@@ -71,7 +71,7 @@ bool PoissonSample1D(Float *samp, int nSamples, RNG &rng, Float radius) {
         auto newPoint = rng.UniformFloat();
         bool discard = false;
         for (auto p : points) {
-            if (newPoint - p <= radius) {
+            if (abs(newPoint - p) <= radius) {
                 discard = true;
                 break;
             }
