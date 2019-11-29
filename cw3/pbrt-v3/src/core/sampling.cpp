@@ -41,25 +41,72 @@ namespace pbrt {
 
 
 // Sampling Function Definitions
-bool PoissonRelaxedSample1D(Float *samp, int nSamples, RNG &rng, Float minRadius) {
-    Float radius = 1;
-    while (!PoissonSample1D(samp, nSamples, rng, radius)) {
-        if (radius == minRadius)
-            return false;
+bool PoissonRelaxedSample1D(Float *samp, int nSamples, RNG &rng, Float radius) {
+    std::vector<Float> points;
+    int discardCount = 0;
+    for (int i = 0; i < nSamples; ++i) {
+        auto newPoint = rng.UniformFloat();
+        bool discard = false;
+        for (auto p : points) {
+            if (abs(newPoint - p) <= radius) {
+                discard = true;
+                break;
+            }
+        }
 
-        radius *= .99;
+        // If we discard this point...
+        if (discard) {
+            i--; // reattempt this sample
+            discardCount++; // increment the discarded sample counter
+            if (discardCount >= 1024) {
+                radius *= .99;
+                discardCount = 0;
+            }
+            continue;
+        }
+
+        // reset the discarded sample counter
+        discardCount = 0;
+        points.push_back(newPoint);
+        samp[i] = newPoint;
     }
+
     return true;
 }
 
-bool PoissonRelaxedSample2D(Point2f *samp, int nSamples, RNG &rng, Float minRadius) {
-    Float radius = 1;
-    while (!PoissonSample2D(samp, nSamples, rng, radius)) {
-        if (radius == minRadius)
-            return false;
+bool PoissonRelaxedSample2D(Point2f *samp, int nSamples, RNG &rng, Float radius) {
+    std::vector<Point2f> points;
+    int discardCount = 0;
+    for (int i = 0; i < nSamples; ++i) {
+        auto newPoint = Point2f(rng.UniformFloat(), rng.UniformFloat());
+        bool discard = false;
+        for (auto p : points) {
+            auto relPoint = newPoint - p;
+            auto distance = sqrt((relPoint.x * relPoint.x) + (relPoint.y * relPoint.y));
 
-        radius *= .99;
+            if (distance <= radius) {
+                discard = true;
+                break;
+            }
+        }
+
+        // If we discard this point...
+        if (discard) {
+            i--; // reattempt this sample
+            discardCount++; // increment the discarded sample counter
+            if (discardCount >= 1024) {
+                radius *= 0.99;
+                discardCount = 0;
+            }
+            continue;
+        }
+
+        // reset the discarded sample counter
+        discardCount = 0;
+        points.push_back(newPoint);
+        samp[i] = newPoint;
     }
+
     return true;
 }
 
