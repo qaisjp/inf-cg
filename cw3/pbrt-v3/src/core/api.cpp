@@ -67,6 +67,7 @@
 #include "lights/point.h"
 #include "lights/projection.h"
 #include "lights/spot.h"
+#include "materials/anph.h"
 #include "materials/disney.h"
 #include "materials/fourier.h"
 #include "materials/glass.h"
@@ -550,6 +551,8 @@ std::shared_ptr<Material> MakeMaterial(const std::string &name,
         material = CreateGlassMaterial(mp);
     else if (name == "mirror")
         material = CreateMirrorMaterial(mp);
+    else if (name == "anph")
+        material = CreateAnphMaterial(mp);
     else if (name == "hair")
         material = CreateHairMaterial(mp);
     else if (name == "disney")

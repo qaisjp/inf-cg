@@ -233,6 +233,29 @@ inline std::ostream &operator<<(std::ostream &os, const BxDF &bxdf) {
     return os;
 }
 
+
+class AnphBxDF : public BxDF {
+  public:
+    // ScaledBxDF Public Methods
+    AnphBxDF(Spectrum &Rd,
+                  Spectrum &Rs,
+                  Float &Nv,
+                  Float &Nu, Vector3f u, Vector3f v)
+        : BxDF(BxDFType(BSDF_ALL)), n(Cross(u,v)), u(u), v(v), Rd(Rd), Rs(Rs), Nv(Nv), Nu(Nu) {}
+
+    Spectrum f(const Vector3f &wo, const Vector3f &wi) const;
+    Spectrum Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &sample,
+                      Float *pdf, BxDFType *sampledType) const;
+    Float Pdf(const Vector3f &wo, const Vector3f &wi) const;
+    std::string ToString() const;
+
+  private:
+    const Vector3f n, u, v;
+    const Spectrum Rd, Rs;
+    const Float Nv, Nu;
+
+};
+
 class ScaledBxDF : public BxDF {
   public:
     // ScaledBxDF Public Methods

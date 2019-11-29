@@ -93,6 +93,43 @@ Spectrum FrConductor(Float cosThetaI, const Spectrum &etai,
     return 0.5 * (Rp + Rs);
 }
 
+
+/**
+ * Anisotrophic Phong
+ */
+
+// BxDF Method Definitions
+Spectrum AnphBxDF::f(const Vector3f &wo, const Vector3f &wi) const {
+    return Spectrum(UniformHemispherePdf());
+}
+
+Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
+                              const Point2f &sample, Float *pdf,
+                              BxDFType *sampledType) const {
+    auto &u = sample;
+    // Unchanged; Float BxDF::Pdf
+
+    // Cosine-sample the hemisphere, flipping the direction if necessary
+    *wi = CosineSampleHemisphere(u);
+    if (wo.z < 0) wi->z *= -1;
+    *pdf = Pdf(wo, *wi);
+    return f(wo, *wi);
+}
+
+Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
+    // Unchanged; Spectrum BxDF::Sample_f
+    return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * InvPi : 0;
+}
+
+std::string AnphBxDF::ToString() const {
+    return std::string("[ AnphdBxDF: ") + std::string(" ]");
+}
+
+
+/**
+ * SCALED BXDF
+ */
+
 // BxDF Method Definitions
 Spectrum ScaledBxDF::f(const Vector3f &wo, const Vector3f &wi) const {
     return scale * bxdf->f(wo, wi);
@@ -114,6 +151,11 @@ std::string ScaledBxDF::ToString() const {
            std::string(" scale: ") + scale.ToString() + std::string(" ]");
 }
 
+
+/**
+ * FRESNEL C
+ */
+
 Fresnel::~Fresnel() {}
 Spectrum FresnelConductor::Evaluate(Float cosThetaI) const {
     return FrConductor(std::abs(cosThetaI), etaI, etaT, k);
@@ -125,6 +167,12 @@ std::string FresnelConductor::ToString() const {
            k.ToString() + std::string(" ]");
 }
 
+
+/**
+ * FRESNEL D
+ */
+
+
 Spectrum FresnelDielectric::Evaluate(Float cosThetaI) const {
     return FrDielectric(cosThetaI, etaI, etaT);
 }
@@ -132,6 +180,11 @@ Spectrum FresnelDielectric::Evaluate(Float cosThetaI) const {
 std::string FresnelDielectric::ToString() const {
     return StringPrintf("[ FrenselDielectric etaI: %f etaT: %f ]", etaI, etaT);
 }
+
+
+/**
+ * SPECULAR REFLECTION
+ */
 
 Spectrum SpecularReflection::Sample_f(const Vector3f &wo, Vector3f *wi,
                                       const Point2f &sample, Float *pdf,
@@ -146,6 +199,12 @@ std::string SpecularReflection::ToString() const {
     return std::string("[ SpecularReflection R: ") + R.ToString() +
            std::string(" fresnel: ") + fresnel->ToString() + std::string(" ]");
 }
+
+
+/**
+ * SPECULAR TRANSMISSION
+ */
+
 
 Spectrum SpecularTransmission::Sample_f(const Vector3f &wo, Vector3f *wi,
                                         const Point2f &sample, Float *pdf,
@@ -175,6 +234,11 @@ std::string SpecularTransmission::ToString() const {
            std::string(" ]");
 }
 
+
+/**
+ * LAMBERTIAN
+ */
+
 Spectrum LambertianReflection::f(const Vector3f &wo, const Vector3f &wi) const {
     return R * InvPi;
 }
@@ -193,6 +257,10 @@ std::string LambertianTransmission::ToString() const {
     return std::string("[ LambertianTransmission T: ") + T.ToString() +
            std::string(" ]");
 }
+
+/**
+ * OrenNayar
+ */
 
 Spectrum OrenNayar::f(const Vector3f &wo, const Vector3f &wi) const {
     Float sinThetaI = SinTheta(wi);
@@ -222,6 +290,11 @@ std::string OrenNayar::ToString() const {
     return std::string("[ OrenNayar R: ") + R.ToString() +
            StringPrintf(" A: %f B: %f ]", A, B);
 }
+
+
+/**
+ * MICROFACET
+ */
 
 Spectrum MicrofacetReflection::f(const Vector3f &wo, const Vector3f &wi) const {
     Float cosThetaO = AbsCosTheta(wo), cosThetaI = AbsCosTheta(wi);
