@@ -237,11 +237,11 @@ inline std::ostream &operator<<(std::ostream &os, const BxDF &bxdf) {
 class AnphBxDF : public BxDF {
   public:
     // ScaledBxDF Public Methods
-    AnphBxDF(Spectrum &Rd,
+    AnphBxDF(bool importance, Spectrum &Rd,
                   Spectrum &Rs,
                   Float &Nv,
                   Float &Nu, Vector3f u, Vector3f v)
-        : BxDF(BxDFType(BSDF_ALL)), n(Cross(u,v)), u(u), v(v), Rd(Rd), Rs(Rs), Nv(Nv), Nu(Nu) {}
+        : BxDF(BxDFType(BSDF_REFLECTION)), importance(importance), n(Cross(u,v)), u(u), v(v), Rd(Rd), Rs(Rs), Nv(Nv), Nu(Nu) {}
 
     Spectrum f(const Vector3f &wo, const Vector3f &wi) const;
     Spectrum Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &sample,
@@ -253,6 +253,7 @@ class AnphBxDF : public BxDF {
     const Vector3f n, u, v;
     const Spectrum Rd, Rs;
     const Float Nv, Nu;
+    const bool importance;
 
 };
 

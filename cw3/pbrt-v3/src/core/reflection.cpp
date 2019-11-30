@@ -100,24 +100,29 @@ Spectrum FrConductor(Float cosThetaI, const Spectrum &etai,
 
 // BxDF Method Definitions
 Spectrum AnphBxDF::f(const Vector3f &wo, const Vector3f &wi) const {
-    return Spectrum(UniformHemispherePdf());
+    // From `FresnelBlend::f`
+    return (28.f / (23.f * Pi)) * Rd * (Spectrum(1.f) - Rs) *
+                       (1 - pow(1 - .5f * AbsCosTheta(wi), 5)) *
+                       (1 - pow(1 - .5f * AbsCosTheta(wo), 5));
 }
 
 Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
-                              const Point2f &sample, Float *pdf,
+                              const Point2f &u, Float *pdf,
                               BxDFType *sampledType) const {
-    auto &u = sample;
-    // Unchanged; Float BxDF::Pdf
 
-    // Cosine-sample the hemisphere, flipping the direction if necessary
-    *wi = CosineSampleHemisphere(u);
-    if (wo.z < 0) wi->z *= -1;
-    *pdf = Pdf(wo, *wi);
+    if (importance) {
+        *wi = CosineSampleHemisphere(u);
+        if (wo.z < 0) wi->z *= -1;
+        *pdf = Pdf(wo, *wi);
+    } else {
+        *pdf = 1;
+    }
+    *wi = Vector3f(-wo.x, -wo.y, wo.z);
     return f(wo, *wi);
 }
 
 Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
-    // Unchanged; Spectrum BxDF::Sample_f
+    // From `BxDF::Pdf`
     return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * InvPi : 0;
 }
 
