@@ -241,7 +241,7 @@ class AnphBxDF : public BxDF {
                   Spectrum &Rs,
                   Float &Nv,
                   Float &Nu, Vector3f u, Vector3f v)
-        : BxDF(BxDFType(BSDF_REFLECTION | BSDF_DIFFUSE)), importance(importance), n(Cross(u,v)), u(u), v(v), Rd(Rd), Rs(Rs), Nv(Nv), Nu(Nu) {}
+        : BxDF(BxDFType(BSDF_REFLECTION)), importance(importance), n(Cross(u,v)), u(u), v(v), Rd(Rd), Rs(Rs), Nv(Nv), Nu(Nu) {}
 
     Spectrum f(const Vector3f &wo, const Vector3f &wi) const;
     Spectrum Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &sample,

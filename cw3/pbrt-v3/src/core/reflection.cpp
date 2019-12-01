@@ -99,14 +99,8 @@ Spectrum FrConductor(Float cosThetaI, const Spectrum &etai,
  */
 
 // BxDF Method Definitions
-
-Spectrum oneMinusSpectrum(Spectrum s) {
-    return (-1 * s) + 1;
-}
-
-
-Spectrum ShlickFresnelApprox(Spectrum Rs, Float s) {
-    return Rs + (oneMinusSpectrum(Rs) * pow(1 - s, 5));
+Spectrum ShlickFresnelApprox(const Spectrum& Rs, Float s) {
+    return Rs + ((Spectrum(1.f) - Rs) * pow(1 - s, 5));
 }
 
 Spectrum AnphBxDF::f(const Vector3f &wo /* k2 */, const Vector3f &wi /* k1 */) const {
@@ -122,22 +116,23 @@ Spectrum AnphBxDF::f(const Vector3f &wo /* k2 */, const Vector3f &wi /* k1 */) c
     auto k_dot_h = Dot(k, h);
 //    std::cout << "hi: " << (Dot(h,wo) == Dot(h,wi)) << std::endl;
 
-    Float specular_c1 = sqrt((Nu + 1) * (Nv + 1)) / (Pi * 8);
+    Float specular_c1 = sqrtf((Nu + 1) * (Nv + 1)) / (Pi * 8);
     Float num_pow = ((Nu * pow(Dot(h, u), 2)) + (Nv * pow(Dot(h, v), 2))) / (1 - pow(Dot(h, n), 2));
-    Float specular_c2_num = pow(Dot(n, h), num_pow);
+    Float specular_c2_num = pow(AbsDot(n, h), std::abs(num_pow));
 //    std::cout << "Dot(n, h): " << Dot(n, h) << " and num_pow = " << num_pow << std::endl;
 
-    if (isnan(specular_c2_num)) {
-        specular_c2_num = 0;
-//        std::cout << "Setting specular_c2_num to 0\n";
-    }
+//    if (isnan(specular_c2_num)) {
+//        specular_c2_num = 0;
+////        std::cout << "Setting specular_c2_num to 0\n";
+//    }
 
     Float specular_c2_denom = k_dot_h * fmax(
-            Dot(n, wi),
-            Dot(n, wo));
+            AbsDot(n, wi),
+            AbsDot(n, wo));
 
     Float specular_c2 = specular_c2_num / specular_c2_denom;
 //    std::cout << specular_c2_num << "/" << specular_c2_denom << " = " << specular_c2 << std::endl;
+
 
     auto specular = specular_c1 * specular_c2 * ShlickFresnelApprox(Rs, k_dot_h);
     return diffuse + specular;
