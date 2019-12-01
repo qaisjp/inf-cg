@@ -99,11 +99,48 @@ Spectrum FrConductor(Float cosThetaI, const Spectrum &etai,
  */
 
 // BxDF Method Definitions
-Spectrum AnphBxDF::f(const Vector3f &wo, const Vector3f &wi) const {
+
+Spectrum oneMinusSpectrum(Spectrum s) {
+    return (-1 * s) + 1;
+}
+
+
+Spectrum ShlickFresnelApprox(Spectrum Rs, Float s) {
+    return Rs + (oneMinusSpectrum(Rs) * pow(1 - s, 5));
+}
+
+Spectrum AnphBxDF::f(const Vector3f &wo /* k2 */, const Vector3f &wi /* k1 */) const {
     // From `FresnelBlend::f`
-    return (28.f / (23.f * Pi)) * Rd * (Spectrum(1.f) - Rs) *
+//    auto wo = Vector3f(0.2, 0.4, 0.6);
+//    auto wi = Vector3f(0.8, 0.12, 0.14);
+    auto diffuse = (28.f / (23.f * Pi)) * Rd * (Spectrum(1.f) - Rs) *
                        (1 - pow(1 - .5f * AbsCosTheta(wi), 5)) *
                        (1 - pow(1 - .5f * AbsCosTheta(wo), 5));
+
+    auto h = Normalize((Normalize(wo) + Normalize(wi)) / 2);
+    auto k = wo;
+    auto k_dot_h = Dot(k, h);
+//    std::cout << "hi: " << (Dot(h,wo) == Dot(h,wi)) << std::endl;
+
+    Float specular_c1 = sqrt((Nu + 1) * (Nv + 1)) / (Pi * 8);
+    Float num_pow = ((Nu * pow(Dot(h, u), 2)) + (Nv * pow(Dot(h, v), 2))) / (1 - pow(Dot(h, n), 2));
+    Float specular_c2_num = pow(Dot(n, h), num_pow);
+//    std::cout << "Dot(n, h): " << Dot(n, h) << " and num_pow = " << num_pow << std::endl;
+
+    if (isnan(specular_c2_num)) {
+        specular_c2_num = 0;
+//        std::cout << "Setting specular_c2_num to 0\n";
+    }
+
+    Float specular_c2_denom = k_dot_h * fmax(
+            Dot(n, wi),
+            Dot(n, wo));
+
+    Float specular_c2 = specular_c2_num / specular_c2_denom;
+//    std::cout << specular_c2_num << "/" << specular_c2_denom << " = " << specular_c2 << std::endl;
+
+    auto specular = specular_c1 * specular_c2 * ShlickFresnelApprox(Rs, k_dot_h);
+    return diffuse + specular;
 }
 
 Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
@@ -117,7 +154,9 @@ Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
     } else {
         *pdf = 1;
     }
-    *wi = Vector3f(-wo.x, -wo.y, wo.z);
+    wi->x = -wo.x;
+    wi->y = -wo.y;
+    wi->z = wo.z;
     return f(wo, *wi);
 }
 
