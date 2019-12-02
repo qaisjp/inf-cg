@@ -44,6 +44,7 @@
 #include "microfacet.h"
 #include "shape.h"
 #include "spectrum.h"
+#include "rng.h"
 
 namespace pbrt {
 
@@ -241,7 +242,7 @@ class AnphBxDF : public BxDF {
                   Spectrum &Rs,
                   Float &Nv,
                   Float &Nu, Vector3f u, Vector3f v)
-        : BxDF(BxDFType(BSDF_REFLECTION)), importance(importance), n(Cross(u,v)), u(u), v(v), Rd(Rd), Rs(Rs), Nv(Nv), Nu(Nu) {}
+        : BxDF(BxDFType(BSDF_REFLECTION)), importance(importance), n(Normalize(Cross(u,v))), u(u), v(v), Rd(Rd), Rs(Rs), Nv(Nv), Nu(Nu) {}
 
     Spectrum f(const Vector3f &wo, const Vector3f &wi) const;
     Spectrum Sample_f(const Vector3f &wo, Vector3f *wi, const Point2f &sample,
@@ -255,6 +256,13 @@ class AnphBxDF : public BxDF {
     const Float Nv, Nu;
     const bool importance;
 
+    void Q1(const Point2f &u, Float *phi, Float *theta) const;
+
+    void Q2(const Point2f &u, Float *phi, Float *theta) const;
+
+    void Q3(const Point2f &u, Float *phi, Float *theta) const;
+
+    void Q4(const Point2f &u, Float *phi, Float *theta) const;
 };
 
 class ScaledBxDF : public BxDF {

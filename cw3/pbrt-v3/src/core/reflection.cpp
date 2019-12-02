@@ -117,47 +117,107 @@ Spectrum AnphBxDF::f(const Vector3f &wo /* k2 */, const Vector3f &wi /* k1 */) c
 //    std::cout << "hi: " << (Dot(h,wo) == Dot(h,wi)) << std::endl;
 
     Float specular_c1 = sqrtf((Nu + 1) * (Nv + 1)) / (Pi * 8);
-    Float num_pow = ((Nu * pow(Dot(h, u), 2)) + (Nv * pow(Dot(h, v), 2))) / (1 - pow(Dot(h, n), 2));
-    Float specular_c2_num = pow(AbsDot(n, h), std::abs(num_pow));
+    Float num_pow = ((Nu * h.x * h.x) + (Nv * h.y * h.y)) / (1 - pow(AbsCosTheta(h), 2));
+
+//    auto dot_n_h = AbsDot(n, h);
+    auto dot_n_h = AbsCosTheta(h);
+    Float specular_c2_num = pow(dot_n_h, num_pow);
 //    std::cout << "Dot(n, h): " << Dot(n, h) << " and num_pow = " << num_pow << std::endl;
 
-//    if (isnan(specular_c2_num)) {
+    if (isnan(specular_c2_num)) {
 //        specular_c2_num = 0;
-////        std::cout << "Setting specular_c2_num to 0\n";
-//    }
+        std::cout << "Setting specular_c2_num to 0\n";
+    }
 
     Float specular_c2_denom = k_dot_h * fmax(
-            AbsDot(n, wi),
-            AbsDot(n, wo));
+            AbsCosTheta(wi),
+            AbsCosTheta(wo));
 
     Float specular_c2 = specular_c2_num / specular_c2_denom;
 //    std::cout << specular_c2_num << "/" << specular_c2_denom << " = " << specular_c2 << std::endl;
 
-
     auto specular = specular_c1 * specular_c2 * ShlickFresnelApprox(Rs, k_dot_h);
-    return diffuse + specular;
+
+//    if ((specular_c1 * specular_c2) < 0)
+//        std::cout << "blah!\n";
+    return (diffuse + specular).Clamp();
+}
+
+void AnphBxDF::Q1(const Point2f &u, Float *phi, Float *theta) const {
+    Float e1 = u.x * 4;
+    Float e2 = u.y;
+    *phi =
+        atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
+    *theta = acos(
+        pow((1 - e2),
+            1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
+}
+
+void AnphBxDF::Q2(const Point2f &u, Float *phi, Float *theta) const {
+    Float e1 = 1.f - 4.f * (0.5f - u.x);
+        Float e2 = u.y;
+        *phi =
+            atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
+        *theta = acos(
+            pow((1 - e2),
+                1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
+        // Flip on the pi/2 axis;
+        *phi = Pi - *phi;
+}
+
+void AnphBxDF::Q3(const Point2f &u, Float *phi, Float *theta) const {
+    Float e1 = 1.f - 4.f * (0.75f - u.x);
+        Float e2 = u.y;
+        *phi =
+            atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
+        *theta = acos(
+            pow((1 - e2),
+                1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
+        // Push it to the third quadrant;
+        *phi += Pi;
+}
+
+void AnphBxDF::Q4(const Point2f &u, Float *phi, Float *theta) const {
+    Float e1 = 1.f - 4.f * (1.f - u.x);
+        Float e2 = u.y;
+        *phi =
+            atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
+        *theta = acos(
+            pow((1 - e2),
+                1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
+        // Flip on the pi axis
+        *phi = 2 * Pi - *phi;
 }
 
 Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
                               const Point2f &u, Float *pdf,
                               BxDFType *sampledType) const {
-
-    if (importance) {
-        *wi = CosineSampleHemisphere(u);
-        if (wo.z < 0) wi->z *= -1;
-        *pdf = Pdf(wo, *wi);
+    Float phi, theta;
+    if(u.x < 0.25){
+        Q1(u, &phi, &theta);
+    } else if(u.x < 0.5){
+        Q2(u, &phi, &theta);
+    } else if(u.x < 0.75){
+        Q3(u, &phi, &theta);
     } else {
-        *pdf = 1;
+        Q4(u, &phi, &theta);
     }
-    wi->x = -wo.x;
-    wi->y = -wo.y;
-    wi->z = wo.z;
+
+    auto h = Vector3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+    *wi = -wo + (2 * Dot(wo, h) * h);
+    *pdf = Pdf(wo, *wi);
+
     return f(wo, *wi);
 }
 
 Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
-    // From `BxDF::Pdf`
-    return SameHemisphere(wo, wi) ? AbsCosTheta(wi) * InvPi : 0;
+    auto h = Normalize((Normalize(wo) + Normalize(wi)) / 2);
+
+    auto a = sqrt((Nu+1)*(Nv+1)) / (2 * Pi);
+    auto exp = (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h));
+    auto b = pow(AbsCosTheta(h), exp);
+
+    return a * b;
 }
 
 std::string AnphBxDF::ToString() const {
