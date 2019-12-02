@@ -11,7 +11,7 @@ for nv in 10 100 1000 10000; do
         # echo 'hi'
 
         T="$(sed "s/$x/$x $nv_p [$nv] $nu_p [$nu]/" in.pbrt |\
-            sed "s/sphere\.exr/sphere-Nv${nv}-Nu${nu}\.exr/")"
+            sed "s/sphere\.exr/sphere-Nv${nv}-Nu${nu}\.png/")"
         # echo "$T"
         printf "%s" "$T" | ../pbrt-v3/cmake-build-release/pbrt &
     done
