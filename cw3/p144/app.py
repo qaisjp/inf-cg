@@ -72,6 +72,9 @@ def modify_scene(scene, integrator, sampler, sample_count, cropwindow="", test=F
     scene = re_sampler.sub("Sampler {} \"integer pixelsamples\" [{}]".format(sampler, sample_count), scene)
     scene = re_film.sub('Film "image" "string filename" "___p144out.exr" "integer xresolution" [400] "integer yresolution" [400]' + cropwindow, scene)
 
+    with open('_lastscene.pbrt', 'w') as this:
+        this.write(scene)
+
     return scene
 
 def simplify_pbrt_input_param(s):
