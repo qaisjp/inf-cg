@@ -23,6 +23,7 @@ def parse_args():
     parser.add_argument('--integrators', nargs='+', required=True, help="provide the rest of an integrator line as a single argument")
     parser.add_argument('--samplers', nargs='+', required=True, help="provide the rest of a sampler line as a single argument, excluding pixelsamples")
     parser.add_argument('--sample-counts', nargs='+', type=int, required=True)
+    parser.add_argument('--cropwindow', type=str, metavar='<x0,x1,y0,y1>', help='Specify an image crop window (comma separated)', default=None)
 
     return parser.parse_args()
 
@@ -30,7 +31,7 @@ re_integrator: Pattern[str] = re.compile('^Integrator (.*)', re.MULTILINE)
 re_sampler: Pattern[str] = re.compile('^Sampler (.*)', re.MULTILINE)
 re_film: Pattern[str] = re.compile('^Film(.*)', re.MULTILINE)
 
-def modify_scene(scene, integrator, sampler, sample_count, test=False):
+def modify_scene(scene, integrator, sampler, sample_count, cropwindow="", test=False):
     if "pixelsamples" in sampler:
         eprint(colored("Given sampler should not contain 'pixelsamples'. This is the job of the application.", 'red'))
         eprint(colored("Sampler input: " + sampler, 'yellow'))
@@ -59,9 +60,12 @@ def modify_scene(scene, integrator, sampler, sample_count, test=False):
     if " " not in sampler and not sampler.startswith('"') and not sampler.endswith('"'):
         sampler = '"' + sampler + '"'
 
+    if cropwindow != "":
+        cropwindow = ' "float cropwindow" [ ' + " ".join(cropwindow) + ' ]'
+
     scene = re_integrator.sub("Integrator " + integrator, scene)
     scene = re_sampler.sub("Sampler {} \"integer pixelsamples\" [{}]".format(sampler, sample_count), scene)
-    scene = re_film.sub('Film "image" "string filename" "___p144out.exr" "integer xresolution" [400] "integer yresolution" [400]', scene)
+    scene = re_film.sub('Film "image" "string filename" "___p144out.exr" "integer xresolution" [400] "integer yresolution" [400]' + cropwindow, scene)
 
     return scene
 
@@ -92,11 +96,15 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
     app_cwd = os.getcwd()
     pbrt_exe = os.path.abspath(parser.pbrt_exe)
 
+    cropwindow = None
+    if parser.cropwindow is not None:
+        cropwindow = parser.cropwindow.replace(" ", "").split(",")
+
     for scene_id, scene_filename in enumerate(scene_filenames):
         for integrator in integrators:
             for sampler in samplers:
                 for sample_count in sample_counts:
-                    scene_out = modify_scene(scenes[scene_id], integrator, sampler, sample_count)
+                    scene_out = modify_scene(scenes[scene_id], integrator, sampler, sample_count, cropwindow)
 
                     out_filename = "out-" + os.path.basename(scene_filename) \
                         + "-i" + simplify_pbrt_input_param(integrator) \
