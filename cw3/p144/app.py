@@ -22,6 +22,8 @@ def parse_args():
     parser.add_argument('--force-remove-out', action='store_true', default=False)
     parser.add_argument('--quant', action='store_true', default=False, help="generate reference image and include quant.json")
 
+    parser.add_argument('--baseline-integrator', type=str, default='path')
+    parser.add_argument('--baseline-sampler', type=str, default='random')
     parser.add_argument('--scenes', nargs='+', type=open, required=True)
     parser.add_argument('--integrators', nargs='+', required=True, help="provide the rest of an integrator line as a single argument")
     parser.add_argument('--samplers', nargs='+', required=True, help="provide the rest of a sampler line as a single argument, excluding pixelsamples")
@@ -150,9 +152,11 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
         eprint("--------------")
         ref_sample_count = max(sample_counts) * 100
         eprint("Reference sample count is", ref_sample_count)
+        eprint("Reference integrator is", parser.baseline_integrator)
+        eprint("Reference sampler is", parser.baseline_sampler)
 
         for scene_id, scene_filename in enumerate(scene_filenames):
-            scene_out = modify_scene(scenes[scene_id], "path", "random", ref_sample_count, cropwindow)
+            scene_out = modify_scene(scenes[scene_id], parser.baseline_integrator, parser.baseline_sampler, ref_sample_count, cropwindow)
             out_filename = get_scene_refname(scene_filename)
             eprint("\n>>>> Generating", out_filename)
             outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename)
