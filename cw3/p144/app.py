@@ -11,13 +11,15 @@ import sys
 import os
 import shutil
 import subprocess
+import json
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='p144')
-    parser.add_argument('--pbrt-exe', type=str, help='path to pbrt exe', required=True)
+    parser.add_argument('--pbrt-folder', type=str, help='path to pbrt binaries folder', required=True)
     parser.add_argument('--ignore-errors', action='store_true', default=False)
     parser.add_argument('--print-test-scenes', action='store_true', default=False)
     parser.add_argument('--force-remove-out', action='store_true', default=False)
+    parser.add_argument('--quant', action='store_true', default=False, help="generate reference image and include quant.json")
 
     parser.add_argument('--scenes', nargs='+', type=open, required=True)
     parser.add_argument('--integrators', nargs='+', required=True, help="provide the rest of an integrator line as a single argument")
@@ -72,6 +74,42 @@ def modify_scene(scene, integrator, sampler, sample_count, cropwindow="", test=F
 def simplify_pbrt_input_param(s):
     return s.split(" ")[0].upper()
 
+def catout_to_list(catout):
+    l = []
+    for line in catout.decode('utf-8').split("\n"):
+        line = line.strip()
+        if line == "":
+            continue
+
+        _, right = line.split(': ')
+        assert right[0] == '('
+        assert right[-1] == ')'
+        tr, tg, tb = map(float, right[1:-1].split(' '))
+        l.append((tr, tg, tb))
+    return l
+
+def catout_to_mse(catout, reference):
+    mse = 0
+    N = 0
+
+    ours = catout_to_list(catout)
+    assert len(ours) == len(reference)
+
+    for tr, tg, tb in ours:
+        rr, rg, rb = reference[N]
+        r = abs(tr - rr)
+        g = abs(tg - rg)
+        b = abs(tb - rb)
+
+        mse += r*r + g*g + b*b
+        N += 1
+
+    assert len(ours) == N
+    return mse/N
+
+def get_scene_refname(scene_filename):
+    return "ref-" + os.path.basename(scene_filename) + ".exr"
+
 def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sample_counts):
     if os.path.isfile('out'):
         eprint("'out' is a file. we need to make a folder.")
@@ -94,11 +132,43 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
     os.makedirs('out', exist_ok=True)
 
     app_cwd = os.getcwd()
-    pbrt_exe = os.path.abspath(parser.pbrt_exe)
+    pbrt_folder = os.path.abspath(parser.pbrt_folder)
+    pbrt_exe = os.path.join(pbrt_folder, "pbrt")
+    imgtool_exe = os.path.join(pbrt_folder, "imgtool")
 
     cropwindow = None
     if parser.cropwindow is not None:
         cropwindow = parser.cropwindow.replace(" ", "").split(",")
+
+    mses = {}
+    references = {}
+    if parser.quant:
+        eprint()
+        eprint("--------------")
+        eprint("---  QUANT  --")
+        eprint("--------------")
+        ref_sample_count = max(sample_counts) * 100
+        eprint("Reference sample count is", ref_sample_count)
+
+        for scene_id, scene_filename in enumerate(scene_filenames):
+            scene_out = modify_scene(scenes[scene_id], "path", "random", ref_sample_count, cropwindow)
+            out_filename = get_scene_refname(scene_filename)
+            eprint("\n>>>> Generating", out_filename)
+
+            this_scene_folder = os.path.dirname(os.path.abspath(scene_filename))
+
+            tempfile = os.path.join(this_scene_folder, "___p144out.exr")
+            subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
+
+            catout = subprocess.run([imgtool_exe, "cat", tempfile], cwd=this_scene_folder, capture_output=True, check=True)
+
+            outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename)
+            shutil.move(tempfile, outfile)
+
+            l = catout_to_list(catout.stdout)
+            references[out_filename] = l
+
+            eprint("Generated reference image", out_filename)
 
     for scene_id, scene_filename in enumerate(scene_filenames):
         for integrator in integrators:
@@ -109,26 +179,40 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
                     out_filename = "out-" + os.path.basename(scene_filename) \
                         + "-i" + simplify_pbrt_input_param(integrator) \
                         + "-s" + simplify_pbrt_input_param(sampler) \
-                        + "-n" + str(sample_count)
+                        + "-n" + "{:03d}".format(sample_count) \
+                        + ".exr"
 
                     this_scene_folder = os.path.dirname(os.path.abspath(scene_filename))
 
-                    outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename+'.exr')
+                    tempfile = os.path.join(this_scene_folder, "___p144out.exr")
+                    outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename)
 
                     eprint()
+                    # eprint(len(outfile) * "-")
+                    # eprint(outfile)
+                    # eprint(len(outfile) * "-")
+                    # eprint(scene_out)
                     eprint(len(outfile) * "-")
                     eprint(outfile)
                     eprint(len(outfile) * "-")
-                    eprint(scene_out)
-                    eprint(len(outfile) * "-")
-                    eprint(outfile)
-                    eprint(len(outfile) * "-")
                     eprint()
-                    subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder)
+                    subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
 
-                    shutil.move(os.path.join(this_scene_folder, "___p144out.exr"), outfile)
-                    eprint("^^^^^^ DONE - written to {} ^^^^^^^^".format(outfile))
+                    if parser.quant:
+                        catout = subprocess.run([imgtool_exe, "cat", tempfile], cwd=this_scene_folder, capture_output=True, check=True)
 
+                    shutil.move(tempfile, outfile)
+
+                    if parser.quant:
+                        mse = catout_to_mse(catout.stdout, references[get_scene_refname(scene_filename)])
+                        mses[out_filename] = mse
+                    else:
+                        mse = "MSE NOT CALCULATED - SEE QUANT FLAG"
+                    eprint("^^^^^^ DONE - written to {} - mse: {}^^^^^^^^".format(outfile, mse))
+
+    if parser.quant:
+        with open('out/quant.json', 'w') as f:
+            f.write(json.dumps(mses, indent=4, sort_keys=True))
 
 
 def main():
