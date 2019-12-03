@@ -124,7 +124,7 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
                     eprint(outfile)
                     eprint(len(outfile) * "-")
                     eprint()
-                    subprocess.run([pbrt_exe], input=bytes(scene_out, 'utf-8'), shell=True, cwd=this_scene_folder)
+                    subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder)
 
                     shutil.move(os.path.join(this_scene_folder, "___p144out.exr"), outfile)
                     eprint("^^^^^^ DONE - written to {} ^^^^^^^^".format(outfile))
