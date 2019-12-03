@@ -26,13 +26,13 @@ def parse_args():
     parser.add_argument('--integrators', nargs='+', required=True, help="provide the rest of an integrator line as a single argument")
     parser.add_argument('--samplers', nargs='+', required=True, help="provide the rest of a sampler line as a single argument, excluding pixelsamples")
     parser.add_argument('--sample-counts', nargs='+', type=int, required=True)
-    parser.add_argument('--cropwindow', type=str, metavar='<x0,x1,y0,y1>', help='Specify an image crop window (comma separated)', default=None)
+    parser.add_argument('--cropwindow', type=str, metavar='<x0,x1,y0,y1>', help='Specify an image crop window (comma separated)', default="0,1,0,1")
 
     return parser.parse_args()
 
-re_integrator: Pattern[str] = re.compile('^Integrator (.*)', re.MULTILINE)
-re_sampler: Pattern[str] = re.compile('^Sampler (.*)', re.MULTILINE)
-re_film: Pattern[str] = re.compile('^Film(.*)', re.MULTILINE)
+re_integrator = re.compile('^Integrator (.*)', re.MULTILINE)
+re_sampler = re.compile('^Sampler (.*)', re.MULTILINE)
+re_film = re.compile('^Film(.*)', re.MULTILINE)
 
 def modify_scene(scene, integrator, sampler, sample_count, cropwindow="", test=False):
     if "pixelsamples" in sampler:
@@ -161,10 +161,10 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
 
             if not outfile_exists or (outfile_exists and not parser.incremental):
                 tempfile = os.path.join(this_scene_folder, "___p144out.exr")
-                subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
+                subprocess.run([pbrt_exe], input=bytes(scene_out, 'utf-8'), shell=True, cwd=this_scene_folder, check=True)
                 shutil.move(tempfile, outfile)
 
-            catout = subprocess.run([imgtool_exe, "cat", outfile], capture_output=True, check=True)
+            catout = subprocess.run([imgtool_exe, "cat", outfile], stdout=subprocess.PIPE, check=True)
 
             l = catout_to_list(catout.stdout)
             references[out_filename] = l
@@ -200,11 +200,11 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
                     eprint()
 
                     if not outfile_exists or (outfile_exists and not parser.incremental):
-                        subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
+                        subprocess.run([pbrt_exe], input=bytes(scene_out, 'utf-8'), shell=True, cwd=this_scene_folder, check=True)
                         shutil.move(tempfile, outfile)
 
                     if parser.quant:
-                        catout = subprocess.run([imgtool_exe, "cat", outfile], capture_output=True, check=True)
+                        catout = subprocess.run([imgtool_exe, "cat", outfile], stdout=subprocess.PIPE, check=True)
                     if parser.quant:
                         mse = catout_to_mse(catout.stdout, references[get_scene_refname(scene_filename)])
                         mses[out_filename] = mse
@@ -220,9 +220,8 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
 def main():
     parser = parse_args()
 
-    scenes: List[str] = []
-    scene_filenames: List[str] = []
-    f: TextIOWrapper
+    scenes = []
+    scene_filenames = []
     for f in parser.scenes:
         ftext = f.read()
         scenes.append(ftext)
@@ -247,9 +246,9 @@ def main():
         eprint("Test scenes printed. Halting.")
         return
 
-    integrators: List[str] = list(set(parser.integrators))
-    samplers: List[str] = list(set(parser.samplers))
-    sample_counts: List[int] = sorted(set(parser.sample_counts))
+    integrators = list(set(parser.integrators))
+    samplers = list(set(parser.samplers))
+    sample_counts = sorted(set(parser.sample_counts))
 
     num_combinations = len(scenes) * len(integrators) * len(samplers) * len(sample_counts)
 
