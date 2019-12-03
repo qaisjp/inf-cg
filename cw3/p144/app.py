@@ -17,6 +17,7 @@ def parse_args():
     parser.add_argument('--pbrt-exe', type=str, help='path to pbrt exe', required=True)
     parser.add_argument('--ignore-errors', action='store_true', default=False)
     parser.add_argument('--print-test-scenes', action='store_true', default=False)
+    parser.add_argument('--force-remove-out', action='store_true', default=False)
 
     parser.add_argument('--scenes', nargs='+', type=open, required=True)
     parser.add_argument('--integrators', nargs='+', required=True, help="provide the rest of an integrator line as a single argument")
@@ -74,7 +75,10 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
     elif os.path.isdir('out'):
         if len(os.listdir('out')) != 0:
             eprint("folder 'out' needs to be empty. kill the directory? (YES/no) ", end='')
-            inp = input().lower()
+            if parser.force_remove_out:
+                inp = 'y'
+            else:
+                inp = input().lower()
             if inp == 'yes' or inp == 'y':
                 eprint('killing "out"... ', end='')
                 shutil.rmtree('out')
