@@ -161,7 +161,7 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
         for scene_id, scene_filename in enumerate(scene_filenames):
             scene_out = modify_scene(scenes[scene_id], parser.baseline_integrator, parser.baseline_sampler, ref_sample_count, cropwindow)
             out_filename = get_scene_refname(scene_filename)
-            eprint("\n>>>> Generating", out_filename)
+            eprint("\n>>>> Generating", out_filename, "({} of {})".format(scene_id+1, len(scene_filenames)))
             outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename)
             outfile_exists = os.path.isfile(outfile)
             this_scene_folder = os.path.dirname(os.path.abspath(scene_filename))
@@ -178,6 +178,8 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
 
             eprint("Generated reference image", out_filename)
 
+    item_id = 0
+    item_count = len(scene_filenames) * len(integrators) * len(samplers) * len(sample_counts)
     for scene_id, scene_filename in enumerate(scene_filenames):
         for integrator in integrators:
             for sampler in samplers:
@@ -202,7 +204,7 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
                     # eprint(len(outfile) * "-")
                     # eprint(scene_out)
                     eprint(len(outfile) * "-")
-                    eprint(outfile)
+                    eprint(outfile + " ({} of {})".format(item_id+1, item_count))
                     eprint(len(outfile) * "-")
                     eprint()
 
@@ -217,7 +219,9 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
                         mses[out_filename] = mse
                     else:
                         mse = "MSE NOT CALCULATED - SEE QUANT FLAG"
-                    eprint("^^^^^^ DONE - written to {} - mse: {}^^^^^^^^".format(outfile, mse))
+
+                    item_id += 1
+                    eprint("^^^^^^ DONE - written to {} - mse: {}^^^^^^^^ - {} left".format(outfile, mse, item_count - item_id))
 
     if parser.quant:
         with open('out/quant.json', 'w') as f:
