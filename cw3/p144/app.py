@@ -17,6 +17,7 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='p144')
     parser.add_argument('--pbrt-folder', type=str, help='path to pbrt binaries folder', required=True)
     parser.add_argument('--ignore-errors', action='store_true', default=False)
+    parser.add_argument('--incremental', action='store_true', default=False)
     parser.add_argument('--print-test-scenes', action='store_true', default=False)
     parser.add_argument('--force-remove-out', action='store_true', default=False)
     parser.add_argument('--quant', action='store_true', default=False, help="generate reference image and include quant.json")
@@ -115,7 +116,7 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
         eprint("'out' is a file. we need to make a folder.")
         sys.exit(1)
     elif os.path.isdir('out'):
-        if len(os.listdir('out')) != 0:
+        if not parser.incremental and len(os.listdir('out')) != 0:
             eprint("folder 'out' needs to be empty. kill the directory? (YES/no) ", end='')
             if parser.force_remove_out:
                 inp = 'y'
@@ -154,16 +155,16 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
             scene_out = modify_scene(scenes[scene_id], "path", "random", ref_sample_count, cropwindow)
             out_filename = get_scene_refname(scene_filename)
             eprint("\n>>>> Generating", out_filename)
-
+            outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename)
+            outfile_exists = os.path.isfile(outfile)
             this_scene_folder = os.path.dirname(os.path.abspath(scene_filename))
 
-            tempfile = os.path.join(this_scene_folder, "___p144out.exr")
-            subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
+            if not outfile_exists or (outfile_exists and not parser.incremental):
+                tempfile = os.path.join(this_scene_folder, "___p144out.exr")
+                subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
+                shutil.move(tempfile, outfile)
 
-            catout = subprocess.run([imgtool_exe, "cat", tempfile], cwd=this_scene_folder, capture_output=True, check=True)
-
-            outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename)
-            shutil.move(tempfile, outfile)
+            catout = subprocess.run([imgtool_exe, "cat", outfile], capture_output=True, check=True)
 
             l = catout_to_list(catout.stdout)
             references[out_filename] = l
@@ -186,6 +187,7 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
 
                     tempfile = os.path.join(this_scene_folder, "___p144out.exr")
                     outfile = os.path.join(os.path.join(app_cwd, 'out'), out_filename)
+                    outfile_exists = os.path.isfile(outfile)
 
                     eprint()
                     # eprint(len(outfile) * "-")
@@ -196,13 +198,13 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
                     eprint(outfile)
                     eprint(len(outfile) * "-")
                     eprint()
-                    subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
+
+                    if not outfile_exists or (outfile_exists and not parser.incremental):
+                        subprocess.run([pbrt_exe], input=scene_out, text=True, shell=True, cwd=this_scene_folder, check=True)
+                        shutil.move(tempfile, outfile)
 
                     if parser.quant:
-                        catout = subprocess.run([imgtool_exe, "cat", tempfile], cwd=this_scene_folder, capture_output=True, check=True)
-
-                    shutil.move(tempfile, outfile)
-
+                        catout = subprocess.run([imgtool_exe, "cat", outfile], capture_output=True, check=True)
                     if parser.quant:
                         mse = catout_to_mse(catout.stdout, references[get_scene_refname(scene_filename)])
                         mses[out_filename] = mse
