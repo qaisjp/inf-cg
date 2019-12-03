@@ -10,8 +10,9 @@ But also, kurwa?
 
 **sometimes..**
 
-| Nv = 10000 | ![](manysphere/sphere-Nv10000-Nu10.png) | ![](manysphere/sphere-Nv10000-Nu100.png) | ![](manysphere/sphere-Nv10000-Nu1000.png) | ![](manysphere/sphere-Nv10000-Nu10000.png) |
+|            | Nu = 10                         | Nu = 100                        | Nu = 1000                       | Nu = 10000                      |
 |------------|---------------------------------|---------------------------------|---------------------------------|---------------------------------|
+| Nv = 10000 | ![](manysphere/sphere-Nv10000-Nu10.png) | ![](manysphere/sphere-Nv10000-Nu100.png) | ![](manysphere/sphere-Nv10000-Nu1000.png) | ![](manysphere/sphere-Nv10000-Nu10000.png) |
 | Nv = 1000  | ![](manysphere/sphere-Nv1000-Nu10.png) | ![](manysphere/sphere-Nv1000-Nu100.png) | ![](manysphere/sphere-Nv1000-Nu1000.png) | ![](manysphere/sphere-Nv1000-Nu10000.png) |
 | Nv = 100   | ![](manysphere/sphere-Nv100-Nu10.png) | ![](manysphere/sphere-Nv100-Nu100.png) | ![](manysphere/sphere-Nv100-Nu1000.png) | ![](manysphere/sphere-Nv100-Nu10000.png) |
 | Nv = 10    | ![](manysphere/sphere-Nv10-Nu10.png) | ![](manysphere/sphere-Nv10-Nu100.png) | ![](manysphere/sphere-Nv10-Nu1000.png) | ![](manysphere/sphere-Nv10-Nu10000.png) |

@@ -5,7 +5,7 @@ Camera "perspective" "float fov" 45
 
 Sampler "random" "integer pixelsamples" 50
 Integrator "path" "integer maxdepth" [5]
-Film "image" "string filename" "sphere.exr" "integer xresolution" [400] "integer yresolution" [400]
+Film "image" "string filename" "sphere.exr" "integer xresolution" [105] "integer yresolution" [105]
 
 WorldBegin
 
