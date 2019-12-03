@@ -143,71 +143,59 @@ Spectrum AnphBxDF::f(const Vector3f &wo /* k2 */, const Vector3f &wi /* k1 */) c
     return (diffuse + specular).Clamp();
 }
 
-void AnphBxDF::Q1(const Point2f &u, Float *phi, Float *theta) const {
-    Float e1 = u.x * 4;
-    Float e2 = u.y;
-    *phi =
-        atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
-    *theta = acos(
-        pow((1 - e2),
-            1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
+Float AnphBxDF::Q1(const Point2f &u) const {
+    return u.x * 4;
 }
 
-void AnphBxDF::Q2(const Point2f &u, Float *phi, Float *theta) const {
-    Float e1 = 1.f - 4.f * (0.5f - u.x);
-        Float e2 = u.y;
-        *phi =
-            atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
-        *theta = acos(
-            pow((1 - e2),
-                1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
-        // Flip on the pi/2 axis;
-        *phi = Pi - *phi;
+Float AnphBxDF::Q2(const Point2f &u) const {
+    return (1.f - 4.f * (0.5f - u.x));
 }
 
-void AnphBxDF::Q3(const Point2f &u, Float *phi, Float *theta) const {
-    Float e1 = 1.f - 4.f * (0.75f - u.x);
-        Float e2 = u.y;
-        *phi =
-            atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
-        *theta = acos(
-            pow((1 - e2),
-                1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
-        // Push it to the third quadrant;
-        *phi += Pi;
+Float AnphBxDF::Q3(const Point2f &u) const {
+    return (1.f - 4.f * (0.75f - u.x));
 }
 
-void AnphBxDF::Q4(const Point2f &u, Float *phi, Float *theta) const {
-    Float e1 = 1.f - 4.f * (1.f - u.x);
-        Float e2 = u.y;
-        *phi =
-            atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * e1) / 2));
-        *theta = acos(
-            pow((1 - e2),
-                1 / ((Nu * cos(*phi) * cos(*phi)) + (Nv * sin(*phi) * sin(*phi)) + 1)));
-        // Flip on the pi axis
-        *phi = 2 * Pi - *phi;
+Float AnphBxDF::Q4(const Point2f &u) const {
+    return (1.f - 4.f * (1.f - u.x));
 }
 
 Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
                               const Point2f &u, Float *pdf,
                               BxDFType *sampledType) const {
-    Float phi, theta;
+    Float phi;
+    typedef Float (AnphBxDF::*Quadrant_F)(const Point2f &u) const;
+    Quadrant_F q;
+    auto minus = false;
+
     if(u.x < 0.25){
-        Q1(u, &phi, &theta);
+        phi = 0;
+        q = &AnphBxDF::Q1;
     } else if(u.x < 0.5){
-        Q2(u, &phi, &theta);
+        phi = Pi;
+        minus = true;
+        q = &AnphBxDF::Q2;
     } else if(u.x < 0.75){
-        Q3(u, &phi, &theta);
+        phi = Pi;
+        q = &AnphBxDF::Q3;
     } else {
-        Q4(u, &phi, &theta);
+        phi = Pi * 2;
+        minus = true;
+        q = &AnphBxDF::Q4;
     }
+
+    auto f = atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * (this->*q)(u)) / 2));
+    if (minus)
+        phi -= f;
+    else
+        phi += f;
+
+    Float theta = acos(pow((1 - u.y), 1 / ((Nu * cos(phi) * cos(phi)) + (Nv * sin(phi) * sin(phi)) + 1)));
 
     auto h = Vector3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
     *wi = -wo + (2 * Dot(wo, h) * h);
     *pdf = Pdf(wo, *wi);
 
-    return f(wo, *wi);
+    return this->f(wo, *wi);
 }
 
 Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {

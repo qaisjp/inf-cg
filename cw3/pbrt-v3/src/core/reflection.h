@@ -256,13 +256,10 @@ class AnphBxDF : public BxDF {
     const Float Nv, Nu;
     const bool importance;
 
-    void Q1(const Point2f &u, Float *phi, Float *theta) const;
-
-    void Q2(const Point2f &u, Float *phi, Float *theta) const;
-
-    void Q3(const Point2f &u, Float *phi, Float *theta) const;
-
-    void Q4(const Point2f &u, Float *phi, Float *theta) const;
+    Float Q1(const Point2f &u) const;
+    Float Q2(const Point2f &u) const;
+    Float Q3(const Point2f &u) const;
+    Float Q4(const Point2f &u) const;
 };
 
 class ScaledBxDF : public BxDF {
