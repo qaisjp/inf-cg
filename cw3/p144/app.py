@@ -181,9 +181,9 @@ def run_combinations(parser, scenes, scene_filenames, integrators, samplers, sam
     item_id = 0
     item_count = len(scene_filenames) * len(integrators) * len(samplers) * len(sample_counts)
     for scene_id, scene_filename in enumerate(scene_filenames):
-        for integrator in integrators:
+        for sample_count in sample_counts:
             for sampler in samplers:
-                for sample_count in sample_counts:
+                for integrator in integrators:
                     scene_out = modify_scene(scenes[scene_id], integrator, sampler, sample_count, cropwindow)
 
                     out_filename = "out-" + os.path.basename(scene_filename) \
