@@ -8,6 +8,8 @@ geometry: margin=2cm
 
 ## Poisson disk sampling <!-- (total 22) -->
 
+Implementing poisson disk sampling
+
 ### Dart-throwing Poisson disk sampling <!-- (5) -->
 
 ### Relaxed Poisson disk sampling <!-- (12) -->
@@ -20,6 +22,14 @@ geometry: margin=2cm
 
 Talk about creating the stuff, diffuse pipe whatever, sample_f
 
+|  **first** | **second** | **third** |
+|------------|------------|-----------|
+| ![](sphere-progress1.png) | ![](sphere-progress2.png) | ![](sphere-progress3.png) ||
+
+1. first: this has my initial implementation of `f`, and has the default `BxDF` implementation for `sample_f` and `pdf`.
+2. second: this attempts to fix `f` by applying some techniques picked up from other material implementations, i.e. using `AbsCosTheta` as seen in `FresnelBlend::f`.
+3. third: this final attempt has `sample_f` and `pdf` implemented
+
 ### Importance sampling <!-- (9) -->
 
 Talk about pdf?
@@ -28,9 +38,11 @@ Talk about pdf?
 
 Example renderings demonstrating the difference between rendering with and without importance sampling
 
-### Different paramters <!-- (4) -->
+### Different parameters <!-- (4) -->
 
+<!--
 Grid of renderings showcasing the behaviour of different parameters, similar to Figure 1 of [3]. An example .pbrt input file is provided at the end of the problem sheet. Crop the image as necessary to arrange in a grid.
+-->
 
 |            | Nu = 10                         | Nu = 100                        | Nu = 1000                       | Nu = 10000                      |
 |------------|---------------------------------|---------------------------------|---------------------------------|---------------------------------|
