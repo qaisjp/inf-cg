@@ -14,13 +14,17 @@ geometry: margin=2cm
 
 ### Example renderings (on one scene) depicting observable differences between Poisson disk sampling and any other (baseline) sampler <!-- (5) -->
 
-## “anisotropic Phong BRDF” [3] <!-- (total 22) -->
+## Anisotropic Phong BRDF <!-- (total 22) -->
 
-### anisotropic Phong material <!-- (7) -->
+### Material <!-- (7) -->
 
-### Importance sampling the anisotropic Phong material <!-- (9) -->
+Talk about creating the stuff, diffuse pipe whatever, sample_f
 
-### Importance sampling <!-- (2) -->
+### Importance sampling <!-- (9) -->
+
+Talk about pdf?
+
+### Differences with and without importance sampling <!-- (2) -->
 
 Example renderings demonstrating the difference between rendering with and without importance sampling
 
@@ -30,10 +34,10 @@ Grid of renderings showcasing the behaviour of different parameters, similar to 
 
 |            | Nu = 10                         | Nu = 100                        | Nu = 1000                       | Nu = 10000                      |
 |------------|---------------------------------|---------------------------------|---------------------------------|---------------------------------|
-| Nv = 10000 | ![](manysphere/sphere-Nv10000-Nu10.png) | ![](manysphere/sphere-Nv10000-Nu100.png) | ![](manysphere/sphere-Nv10000-Nu1000.png) | ![](manysphere/sphere-Nv10000-Nu10000.png) |
-| Nv = 1000  | ![](manysphere/sphere-Nv1000-Nu10.png) | ![](manysphere/sphere-Nv1000-Nu100.png) | ![](manysphere/sphere-Nv1000-Nu1000.png) | ![](manysphere/sphere-Nv1000-Nu10000.png) |
-| Nv = 100   | ![](manysphere/sphere-Nv100-Nu10.png) | ![](manysphere/sphere-Nv100-Nu100.png) | ![](manysphere/sphere-Nv100-Nu1000.png) | ![](manysphere/sphere-Nv100-Nu10000.png) |
-| Nv = 10    | ![](manysphere/sphere-Nv10-Nu10.png) | ![](manysphere/sphere-Nv10-Nu100.png) | ![](manysphere/sphere-Nv10-Nu1000.png) | ![](manysphere/sphere-Nv10-Nu10000.png) |
+| Nv = 10000 | ![](manysphere-importance-on/sphere-Nv10000-Nu10.png) | ![](manysphere-importance-on/sphere-Nv10000-Nu100.png) | ![](manysphere-importance-on/sphere-Nv10000-Nu1000.png) | ![](manysphere-importance-on/sphere-Nv10000-Nu10000.png) |
+| Nv = 1000  | ![](manysphere-importance-on/sphere-Nv1000-Nu10.png) | ![](manysphere-importance-on/sphere-Nv1000-Nu100.png) | ![](manysphere-importance-on/sphere-Nv1000-Nu1000.png) | ![](manysphere-importance-on/sphere-Nv1000-Nu10000.png) |
+| Nv = 100   | ![](manysphere-importance-on/sphere-Nv100-Nu10.png) | ![](manysphere-importance-on/sphere-Nv100-Nu100.png) | ![](manysphere-importance-on/sphere-Nv100-Nu1000.png) | ![](manysphere-importance-on/sphere-Nv100-Nu10000.png) |
+| Nv = 10    | ![](manysphere-importance-on/sphere-Nv10-Nu10.png) | ![](manysphere-importance-on/sphere-Nv10-Nu100.png) | ![](manysphere-importance-on/sphere-Nv10-Nu1000.png) | ![](manysphere-importance-on/sphere-Nv10-Nu10000.png) |
 |            | Nu = 10                         | Nu = 100                        | Nu = 1000                       | Nu = 10000                      |
 
 # Experimental evaluation <!-- (total 44) -->
