@@ -4,6 +4,8 @@ author: QP - s1620208@inf.ed.ac.uk
 geometry: margin=2cm
 ---
 
+Scenes throughout this project have been procured and modified from [pbrt-v2](https://www.pbrt.org/scenes-v2.html).
+
 # Implementation <!-- (total 44) -->
 
 ## Poisson disk sampling <!-- (total 22) -->
@@ -30,9 +32,31 @@ Talk about creating the stuff, diffuse pipe whatever, sample_f
 2. **second**: this attempts to fix `f` by applying some techniques picked up from other material implementations, i.e. using `AbsCosTheta` as seen in `FresnelBlend::f`.
 3. **third**: this final attempt has `sample_f` and `pdf` implemented
 
+Whilst tweaking the implementation I came across renderings like the following:
+
+| ![](sphere-rubbish0.png) | ![sphere-rubbish1.png](sphere-rubbish1.png) |
+
 ### Importance sampling <!-- (9) -->
 
-Talk about pdf?
+The paper given (see _"Using the BRDF model in a Monte Carlo setting"_) gave us the formula for generating the `pdf` for a given half vector, leading our implementation to look like:
+
+```cpp
+Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
+    if (!importance) {
+        return BxDF::Pdf(wo, wi);
+    }
+    auto h = Normalize((Normalize(wo) + Normalize(wi)) / 2);
+    return (sqrt((Nu+1)*(Nv+1)) / (2 * Pi))
+        * pow(
+            AbsCosTheta(h),
+            (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h))
+        );
+}
+```
+
+if `importance` is false (i.e. importance sampling disabled), we can fall back on the initial implementation of `pdf`.
+
+This was extremely straightforward. As learned from `FresnelBlend::f`, we replace $n \cdot h$ with `AbsCosTheta(h)`.
 
 ### Differences with and without importance sampling <!-- (2) -->
 
