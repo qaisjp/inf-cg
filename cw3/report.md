@@ -18,6 +18,8 @@ Implementing poisson disk sampling
 
 ### Example renderings (on one scene) depicting observable differences between Poisson disk sampling and any other (baseline) sampler <!-- (5) -->
 
+\pagebreak
+
 ## Anisotropic Phong BRDF <!-- (total 22) -->
 
 ### Material <!-- (7) -->
@@ -35,6 +37,8 @@ Talk about creating the stuff, diffuse pipe whatever, sample_f
 Whilst tweaking the implementation I came across renderings like the following:
 
 | ![](sphere-rubbish0.png) | ![sphere-rubbish1.png](sphere-rubbish1.png) |
+
+\pagebreak
 
 ### Importance sampling <!-- (9) -->
 
@@ -77,6 +81,7 @@ Material "anph"
 |--------------------------------------------|---------------------------------------|
 | ![](sphere-without-importance.png)         | ![](sphere-with-importance.png)       |
 
+\pagebreak
 
 ### Different parameters <!-- (4) -->
 
@@ -92,15 +97,65 @@ Grid of renderings showcasing the behaviour of different parameters, similar to 
 | Nv = 10    | ![](manysphere-importance-on/sphere-Nv10-Nu10.png) | ![](manysphere-importance-on/sphere-Nv10-Nu100.png) | ![](manysphere-importance-on/sphere-Nv10-Nu1000.png) | ![](manysphere-importance-on/sphere-Nv10-Nu10000.png) |
 |            | Nu = 10                         | Nu = 100                        | Nu = 1000                       | Nu = 10000                      |
 
+
+\pagebreak
+
 # Experimental evaluation <!-- (total 44) -->
 
 ## Qualitative comparison <!-- (12) -->
 
 1 mark per sampler-integrator-scene image
 
-## Convergence plots (12) (0.25 per sampler-integrator-scene combination convergence plot)
+\pagebreak
 
-## Description, assessment and discussion of the results. This should include justification for why certain combinations appear better than others (20)
+## Convergence plots <!-- (12 points) (0.25 per sampler-integrator-scene combination convergence plot) -->
+
+For the following plots, rows are integrators with columns being samplers. Rendered using Google Sheets.
+
+**Box**
+
+| | halton | poisson | random | sobol
+| ---- | ---- | ---- | ---- | --- |
+| bdpt | ![](grids/cornell-aniso,bdpt,halton.png){ width=150px } | ![](grids/cornell-aniso,bdpt,poisson.png){ width=150px } | ![](grids/cornell-aniso,bdpt,random.png){ width=150px } | ![](grids/cornell-aniso,bdpt,sobol.png){ width=150px } |
+| path | ![](grids/cornell-aniso,path,halton.png){ width=150px } | ![](grids/cornell-aniso,path,poisson.png){ width=150px } | ![](grids/cornell-aniso,path,random.png){ width=150px } | ![](grids/cornell-aniso,path,sobol.png){ width=150px } |
+| whitted | ![](grids/cornell-aniso,whitted,halton.png){ width=150px } | ![](grids/cornell-aniso,whitted,poisson.png){ width=150px } | ![](grids/cornell-aniso,whitted,random.png){ width=150px } | ![](grids/cornell-aniso,whitted,sobol.png){ width=150px } |
+
+**Dragons**
+
+| | halton | poisson | random | sobol
+| ---- | ---- | ---- | ---- | --- |
+| bdpt | ![](grids/dof-dragons-aniso,bdpt,halton.png){ width=150px } | ![](grids/dof-dragons-aniso,bdpt,poisson.png){ width=150px } | ![](grids/dof-dragons-aniso,bdpt,random.png){ width=150px } | ![](grids/dof-dragons-aniso,bdpt,sobol.png){ width=150px } |
+| path | ![](grids/dof-dragons-aniso,path,halton.png){ width=150px } | ![](grids/dof-dragons-aniso,path,poisson.png){ width=150px } | ![](grids/dof-dragons-aniso,path,random.png){ width=150px } | ![](grids/dof-dragons-aniso,path,sobol.png){ width=150px } |
+| whitted | ![](grids/dof-dragons-aniso,whitted,halton.png){ width=150px } | ![](grids/dof-dragons-aniso,whitted,poisson.png){ width=150px } | ![](grids/dof-dragons-aniso,whitted,random.png){ width=150px } | ![](grids/dof-dragons-aniso,whitted,sobol.png){ width=150px } |
+
+\pagebreak
+
+**Killeroo3**
+
+| | halton | poisson | random | sobol
+| ---- | ---- | ---- | ---- | --- |
+| bdpt | ![](grids/killeroo-aniso,bdpt,halton.png){ width=150px } | ![](grids/killeroo-aniso,bdpt,poisson.png){ width=150px } | ![](grids/killeroo-aniso,bdpt,random.png){ width=150px } | ![](grids/killeroo-aniso,bdpt,sobol.png){ width=150px } |
+| path | ![](grids/killeroo-aniso,path,halton.png){ width=150px } | ![](grids/killeroo-aniso,path,poisson.png){ width=150px } | ![](grids/killeroo-aniso,path,random.png){ width=150px } | ![](grids/killeroo-aniso,path,sobol.png){ width=150px } |
+| whitted | ![](grids/killeroo-aniso,whitted,halton.png){ width=150px } | ![](grids/killeroo-aniso,whitted,poisson.png){ width=150px } | ![](grids/killeroo-aniso,whitted,random.png){ width=150px } | ![](grids/killeroo-aniso,whitted,sobol.png){ width=150px } |
+
+**Teapot**
+
+
+| | halton | poisson | random | sobol
+| ---- | ---- | ---- | ---- | --- |
+| bdpt | ![](grids/teapot-cornell-aniso,bdpt,halton.png){ width=150px } | ![](grids/teapot-cornell-aniso,bdpt,poisson.png){ width=150px } | ![](grids/teapot-cornell-aniso,bdpt,random.png){ width=150px } | ![](grids/teapot-cornell-aniso,bdpt,sobol.png){ width=150px } |
+| path | ![](grids/teapot-cornell-aniso,path,halton.png){ width=150px } | ![](grids/teapot-cornell-aniso,path,poisson.png){ width=150px } | ![](grids/teapot-cornell-aniso,path,random.png){ width=150px } | ![](grids/teapot-cornell-aniso,path,sobol.png){ width=150px } |
+| whitted | ![](grids/teapot-cornell-aniso,whitted,halton.png){ width=150px } | ![](grids/teapot-cornell-aniso,whitted,poisson.png){ width=150px } | ![](grids/teapot-cornell-aniso,whitted,random.png){ width=150px } | ![](grids/teapot-cornell-aniso,whitted,sobol.png){ width=150px } |
+
+\pagebreak
+
+## Results
+
+<!--
+Description, assessment and discussion of the results. This should include justification for why certain combinations appear better than others (20)
+-->
+
+Generally the "dragons" scene produces inconsistent results.
 
 <!--
 # Five-minute presentation (12)
