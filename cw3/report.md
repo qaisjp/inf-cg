@@ -26,9 +26,9 @@ Talk about creating the stuff, diffuse pipe whatever, sample_f
 |------------|------------|-----------|
 | ![](sphere-progress1.png) | ![](sphere-progress2.png) | ![](sphere-progress3.png) ||
 
-1. first: this has my initial implementation of `f`, and has the default `BxDF` implementation for `sample_f` and `pdf`.
-2. second: this attempts to fix `f` by applying some techniques picked up from other material implementations, i.e. using `AbsCosTheta` as seen in `FresnelBlend::f`.
-3. third: this final attempt has `sample_f` and `pdf` implemented
+1. **first**: this has my initial implementation of `f`, and has the default `BxDF` implementation for `sample_f` and `pdf`.
+2. **second**: this attempts to fix `f` by applying some techniques picked up from other material implementations, i.e. using `AbsCosTheta` as seen in `FresnelBlend::f`.
+3. **third**: this final attempt has `sample_f` and `pdf` implemented
 
 ### Importance sampling <!-- (9) -->
 
@@ -36,7 +36,23 @@ Talk about pdf?
 
 ### Differences with and without importance sampling <!-- (2) -->
 
+<!--
 Example renderings demonstrating the difference between rendering with and without importance sampling
+-->
+
+```python
+Sampler "random" "integer pixelsamples" 50
+Integrator "path" "integer maxdepth" [50]
+Material "anph"
+    "rgb Rd" [ 0.2 0.2 0.2 ] "rgb Rs" [ 0.2 0.2 0.2 ]
+    "float nv" [100] "float nu" [10000.0]
+    "bool importance" "true"
+```
+
+| **without**  (`"bool importance" "false"`) | **with** (`"bool importance" "true"`) |
+|--------------------------------------------|---------------------------------------|
+| ![](sphere-without-importance.png)         | ![](sphere-with-importance.png)       |
+
 
 ### Different parameters <!-- (4) -->
 
