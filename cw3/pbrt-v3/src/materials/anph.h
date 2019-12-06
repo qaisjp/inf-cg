@@ -21,7 +21,7 @@ class AnphMaterial : public Material {
                   std::shared_ptr<Texture<Spectrum>> Rs,
                   std::shared_ptr<Texture<Float>> Nv,
                   std::shared_ptr<Texture<Float>> Nu)
-        : Rd(std::move(Rd)), Rs(std::move(Rs)), Nv(std::move(Nv)), Nu(std::move(Nu)) {}
+        : Rd(std::move(Rd)), Rs(std::move(Rs)), Nv(std::move(Nv)), Nu(std::move(Nu)), importance(importance) {}
     void ComputeScatteringFunctions(SurfaceInteraction *si, MemoryArena &arena,
                                     TransportMode mode,
                                     bool allowMultipleLobes) const;

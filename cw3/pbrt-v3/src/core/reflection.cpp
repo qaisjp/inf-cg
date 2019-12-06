@@ -163,8 +163,7 @@ Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
                               const Point2f &u, Float *pdf,
                               BxDFType *sampledType) const {
     if (!importance) {
-        BxDF* b = (BxDF*) this;
-        return b->Sample_f(wo, wi, u, pdf, sampledType);
+        return BxDF::Sample_f(wo, wi, u, pdf, sampledType);
     }
     Float phi;
     typedef Float (AnphBxDF::*Quadrant_F)(const Point2f &u) const;
@@ -214,8 +213,7 @@ Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
 
 Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
     if (!importance) {
-        BxDF* b = (BxDF*) this;
-        return b->Pdf(wo, wi);
+        return BxDF::Pdf(wo, wi);
     }
     auto h = Normalize((Normalize(wo) + Normalize(wi)) / 2);
     auto pow_num = (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h));
