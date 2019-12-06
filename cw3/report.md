@@ -3,12 +3,30 @@ title: Computer Graphics - CW3
 author: QP - s1620208@inf.ed.ac.uk
 geometry: margin=2cm
 ---
-Kurwa!
 
-But also, kurwa?
+# Implementation <!-- (total 44) -->
 
+## Poisson disk sampling <!-- (total 22) -->
 
-**sometimes..**
+### Dart-throwing Poisson disk sampling <!-- (5) -->
+
+### Relaxed Poisson disk sampling <!-- (12) -->
+
+### Example renderings (on one scene) depicting observable differences between Poisson disk sampling and any other (baseline) sampler <!-- (5) -->
+
+## “anisotropic Phong BRDF” [3] <!-- (total 22) -->
+
+### anisotropic Phong material <!-- (7) -->
+
+### Importance sampling the anisotropic Phong material <!-- (9) -->
+
+### Importance sampling <!-- (2) -->
+
+Example renderings demonstrating the difference between rendering with and without importance sampling
+
+### Different paramters <!-- (4) -->
+
+Grid of renderings showcasing the behaviour of different parameters, similar to Figure 1 of [3]. An example .pbrt input file is provided at the end of the problem sheet. Crop the image as necessary to arrange in a grid.
 
 |            | Nu = 10                         | Nu = 100                        | Nu = 1000                       | Nu = 10000                      |
 |------------|---------------------------------|---------------------------------|---------------------------------|---------------------------------|
@@ -18,41 +36,16 @@ But also, kurwa?
 | Nv = 10    | ![](manysphere/sphere-Nv10-Nu10.png) | ![](manysphere/sphere-Nv10-Nu100.png) | ![](manysphere/sphere-Nv10-Nu1000.png) | ![](manysphere/sphere-Nv10-Nu10000.png) |
 |            | Nu = 10                         | Nu = 100                        | Nu = 1000                       | Nu = 10000                      |
 
-```c++
+# Experimental evaluation <!-- (total 44) -->
 
-Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
-                              const Point2f &u, Float *pdf,
-                              BxDFType *sampledType) const {
-    Float phi, theta;
-    if(u.x < 0.25){
-        Q1(u, &phi, &theta);
-    } else if(u.x < 0.5){
-        Q2(u, &phi, &theta);
-    } else if(u.x < 0.75){
-        Q3(u, &phi, &theta);
-    } else {
-        Q4(u, &phi, &theta);
-    }
+## Qualitative comparison <!-- (12) -->
 
-    auto h = Vector3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
-    *wi = -wo + (2 * Dot(wo, h) * h);
-    *pdf = Pdf(wo, *wi);
+1 mark per sampler-integrator-scene image
 
-    return f(wo, *wi);
-}
+## Convergence plots (12) (0.25 per sampler-integrator-scene combination convergence plot)
 
-Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
-    auto h = Normalize((Normalize(wo) + Normalize(wi)) / 2);
+## Description, assessment and discussion of the results. This should include justification for why certain combinations appear better than others (20)
 
-    auto a = sqrt((Nu+1)*(Nv+1)) / (2 * Pi);
-    auto exp = (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h));
-    auto b = pow(AbsCosTheta(h), exp);
-
-    return a * b;
-}
-
-std::string AnphBxDF::ToString() const {
-    return std::string("[ AnphdBxDF: ") + std::string(" ]");
-}
-
-```
+<!--
+# Five-minute presentation (12)
+-->
