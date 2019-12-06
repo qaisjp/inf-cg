@@ -216,8 +216,7 @@ Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
         return BxDF::Pdf(wo, wi);
     }
     auto h = Normalize((Normalize(wo) + Normalize(wi)) / 2);
-    auto pow_num = (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h));
-    return (sqrt((Nu+1)*(Nv+1)) / (2 * Pi)) * pow(AbsCosTheta(h), pow_num);
+    return (sqrt((Nu+1)*(Nv+1)) / (2 * Pi)) * pow(AbsCosTheta(h), (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h)));
 }
 
 std::string AnphBxDF::ToString() const {
