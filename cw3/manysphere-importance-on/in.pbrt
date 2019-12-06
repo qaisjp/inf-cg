@@ -16,7 +16,7 @@ WorldBegin
     AttributeEnd
 
     AttributeBegin
-        Material "anph" "rgb Rd" [ 0 1 1 ] "rgb Rs" [.5 .5 .5 ] "bool importance" "false"
+        Material "anph" "rgb Rd" [ 0.2 0.2 0.2 ] "rgb Rs" [ 0.2 0.2 0.2 ] "bool importance" "false"
 
         Shape "sphere" "float radius" 1
     AttributeEnd
