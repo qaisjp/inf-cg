@@ -183,15 +183,25 @@ Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
         q = &AnphBxDF::Q4;
     }
 
+    // std::cout << phi << std::endl;
+    // std::cout << minus << std::endl;
+
     auto f = atan(sqrt((Nu + 1) / (Nv + 1)) * tan((Pi * (this->*q)(u)) / 2));
     if (minus)
         phi -= f;
     else
         phi += f;
 
-    Float theta = acos(pow((1 - u.y), 1 / ((Nu * cos(phi) * cos(phi)) + (Nv * sin(phi) * sin(phi)) + 1)));
+    // std::cout << f << std::endl;
+    // std::cout << phi << std::endl;
+    auto cosPhi = cos(phi);
+    auto sinPhi = sin(phi);
 
-    auto h = Vector3f(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+    Float theta = acos(pow((1 - u.y), 1 / ((Nu * cosPhi * cosPhi) + (Nv * sinPhi * sinPhi) + 1)));
+
+    // std::cout << theta << std::endl;
+
+    auto h = Vector3f(sin(theta) * cosPhi, sin(theta) * sinPhi, cos(theta));
     *wi = -wo + (2 * Dot(wo, h) * h);
     *pdf = Pdf(wo, *wi);
 
@@ -200,12 +210,8 @@ Spectrum AnphBxDF::Sample_f(const Vector3f &wo, Vector3f *wi,
 
 Float AnphBxDF::Pdf(const Vector3f &wo, const Vector3f &wi) const {
     auto h = Normalize((Normalize(wo) + Normalize(wi)) / 2);
-
-    auto a = sqrt((Nu+1)*(Nv+1)) / (2 * Pi);
-    auto exp = (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h));
-    auto b = pow(AbsCosTheta(h), exp);
-
-    return a * b;
+    auto pow_num = (Nu * Cos2Phi(h)) + (Nv * Sin2Phi(h));
+    return sqrt((Nu+1)*(Nv+1)) / (2 * Pi) * pow(AbsCosTheta(h), pow_num);
 }
 
 std::string AnphBxDF::ToString() const {
